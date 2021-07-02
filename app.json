@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/connect/connect",
+    "pages/wifiConfig/wifiConfig",
+    "pages/bind/bind"
+  ],
+  "plugins": {
+    "lzbluetooth-plugin": {
+      "version": "1.0.0",
+      "provider": "wxe3d2a6ab8dd5b49b"
+    }
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示" 
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}

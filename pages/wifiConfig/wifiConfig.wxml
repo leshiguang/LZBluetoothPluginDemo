@@ -1,0 +1,48 @@
+<!-- pages/wifiConfig/wifiConfig.wxml -->
+<!-- 引导页 -->
+<view>
+  <view class="guide" wx:if="pageType===0">
+    <p class="title">请轻踩秤面，让秤上屏幕亮起</p>
+    <button class="button" bindtap="onClickStartConfig">开始配网</button>
+  </view>
+  <!-- wifi列表 -->
+  <view class="guide" wx:if="{{pageType===1}}">
+    <p class="title page2">请选择一个Wi-Fi网络进行配置:</p>
+    <image wx:if="apList.length===0" class="loading" src="https://files.lifesense.com/other/20200928/23b6c8fbd83844eeb3f843ee35f10070.png" />
+    <scroll-view class="scroll" scroll-y="true">
+      <view wx:for="{{apList}}" wx:key="ssid" wx:for-item="result" data-result="{{result}}" bindtap="onClickAp" class="ap-wrap">
+        <view class="ap-ssid">{{result.ssid}}</view>
+        <view class="icon-warp">
+          <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/200aefd849764eb0818074636fe069ed.png" />
+          <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/1d4c1041cec9436daaa66d962c7acfd2.png" />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <!-- 输入wifi -->
+  <view class="guide" wx:if="{{pageType===2}}">
+    <p class="title">请输入Wi-Fi密码</p>
+    <view class="ap-wrap">
+      <view class="ap-ssid">{{selectAp.ssid}}</view>
+      <view class="icon-warp">
+        <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/200aefd849764eb0818074636fe069ed.png" />
+        <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/1d4c1041cec9436daaa66d962c7acfd2.png" />
+      </view>
+    </view>
+    <input class="input" :class="{'focus_style':textFocus}" focus="{{textFocus}}" bindinput="onInputPassword" placeholder-class="place_holder" placeholder="{{password_label}}" />
+    <view class="config-tips">可持续轻踩秤面，让屏幕常亮 请确保网络环境良好</view>
+    <button bindtap="onClickConnect" class="button">开始配置</button>
+  </view>
+  <!-- 配置成功 -->
+  <view wx:if="{{pageType===3}}">
+    <image class="succeed" src="https://files.lifesense.com/other/20200928/4fb56e58bd7743aa8bb2021922e6afc0.png" />
+    <p class="title page3">配置成功</p>
+    <button bindtap="onComplete" class="button">完成</button>
+  </view>
+  <view wx:if="{{pageType===4}}">
+    <image class="succeed fail" src="https://files.lifesense.com/other/20200928/90598d7e7f4144c28341e06e42bf64e2.png" />
+    <p class="title page3">{{bindFailTitle}}</p>
+    <p class="tips">{{bindFailTips}}</p>
+    <button bindtap="onClickRetry" class="button retry">重试</button>
+  </view>
+</view>

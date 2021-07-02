@@ -1,0 +1,19 @@
+<view class='flex-wrp-row item'>
+  <view class='item-left flex-wrp-row'>
+    <view class='list-right'>
+      <view class='title'>{{name}}[{{mac}}]:{{deviceId}}</view>
+      <view class='connected-status'>{{statusMsg}}</view>
+    </view>
+  </view>
+</view>
+<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<view class='settingView'>
+  <button class='connectBtn' bindtap='restartReceiveData'>重新监听</button>
+  <button class='connectBtn' bindtap='stopReceiveData'>删除监听</button>
+  <button class='connectBtn' bindtap='configWifi'>wifi配网按钮</button>
+</view>
+<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<scroll-view scroll-y="true" class='logText' enable-flex="true">
+  <span>日志输出:(可以滚动查看)</span>
+  <text selectable="true" class="text">{{logText}}</text>
+</scroll-view>

@@ -1,0 +1,126 @@
+
+.page{
+  background: #F5F5F5;
+}
+
+.scan-list {
+display: flex;
+flex-direction: column;
+}
+.scan-item {
+margin: 10rpx;
+}
+
+/* 水平显示 */
+.flex-wrp-row {
+display: flex;
+flex-direction: row;
+font-size: 30rpx;
+background: #F5F5F5;
+}
+.item {
+padding: 20rpx;
+position: relative;
+}
+.item-left {
+ flex: 1; /* 重要 */
+ align-items:center;
+ padding-left: 5px;
+}
+.item-right {
+position: relative;
+align-items:center;
+}
+
+/** 扫描列表样式 **/
+
+.list-group{
+display: flex;
+padding: 5px;
+}
+.img{
+ width:70%;
+ height:70%;
+}
+.list-left{
+/* flex:0 0 80px; */
+width: 48px;
+height: 48px;
+display: flex;
+align-items: center
+}
+.list-right{
+flex:1;
+}
+.title{
+font-size:14px;
+display: -webkit-box;
+overflow: hidden;
+-webkit-line-clamp: 2;
+text-overflow: ellipsis;
+-webkit-box-orient: vertical;
+padding-top: 5px;
+}
+.desc{
+font-size:12px;
+color:#7a7a7a;
+margin-top:3px;
+}
+
+span {
+  color: #FF0000;
+  font-size: 11px;
+
+}
+/** view 点击样式*/
+.list-group-checked{
+display: flex;
+padding: 5px;
+border: 1px solid #FE0002 ;
+color: #FE0002 ;
+background: #fff;
+}
+
+.list-group-normal{
+display: flex;
+padding: 5px;
+border: none;
+color: #333;
+background: #F0F1EC;
+}
+
+.imageBtn{
+height: 20px;
+width: 20px;
+}
+/** 设置容器内容垂直居中显示 */
+.imageView{
+display: flex;
+align-items: center;
+justify-content: center;  
+margin-right: 5px;
+padding: 5px;
+}
+
+.connectBtn{
+background: none !important;
+color: #000000 !important;
+font-size: 16px;
+}
+
+.connectBtn::after{
+border: none;
+}
+
+.logText{
+  background: #F5F5F5;
+  height: 900rpx;
+  margin: 10rpx;
+  font-size: 16px;
+
+}
+.text{
+  padding-right: 5rpx;
+  text-overflow:ellipsis;
+word-break:break-all
+}

@@ -1,0 +1,42 @@
+<view class='page'>
+  <view wx:if='{{isBluetoothEnable}}' class='flex-wrp-row item'>
+    <view class='item-left flex-wrp-row'>
+      <text>{{statusMsg}}</text>
+    </view>
+    <view wx:if='{{isScanning}}' bindtap='stopSearch'>
+      <button class='connectBtn' loading='{{isScanning}}'>点击停止搜索</button>
+    </view>
+    <view wx:if='{{!isScanning}}' bindtap='startSearch' class='imageView'>
+      <image class='imageBtn' src='../image/search.svg'></image>
+    </view>
+  </view>
+   <view style='height:20rpx;  background: white'></view>
+  <view class='flex-wrp-row item'>
+    <input class='mac-input' bindinput="inputMacString" value="{{inputMacString}}" placeholder="请输入12位的macstring"></input>
+    <button size="mini" bindtap="jump">跳转</button>
+  </view>
+  <view style='height:20rpx;  background: white'></view>
+
+  <scroll-view class="scan-list" scroll-y="true" enable-flex="true">
+    <view wx:for="{{scanResults}}" wx:for-item="result" wx:key="unique">
+      <view class='list-group' data-text="{{index}}" bindtap="selectDevice">
+        <!-- icon layout -->
+        <view class='list-left'>
+          <image src='../image/bluetooth.png' class='img'></image>
+        </view>
+        <!-- name & address layout -->
+        <view class='list-right'>
+          <view>
+            <view class='title'>{{result.name}}</view>
+            <view class='title'>rssi: {{result.RSSI}}</view>
+           </view>
+          
+          <view class='desc'>mac: {{result.mac}} <span>{{result.serviceUUIDs}}</span></view>
+          <view class='desc'>deviceId: {{result.deviceId}}</view>
+        </view>
+      </view>
+      <!-- space -->
+      <view style='wight:100%;height:10rpx;  background: white'></view>
+    </view>
+  </scroll-view>
+</view>
