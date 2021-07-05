@@ -286,8 +286,8 @@ sdk会自动连接设备，建议您将用户和设备的绑定关系持久化�
 
 | 方法名           |  类型      | 说明                                                    |
 | :-------------  | :---:     | :--------------------------------------------------------- |
-| ScanWifiReq     |   func    | 扫描指令  参考 [4.1](#4.1 扫描wifi)                                      |
-| ConnectWifiReq  |   func    | 连接wifi指令  参考 [4.2](#4.2 wifi数据)                                      |
+| ScanWifiReq     |   func    | 扫描指令  参考 [4.1](#41-扫描wifi)                                      |
+| ConnectWifiReq  |   func    | 连接wifi指令  参考 [4.2](#42-wifi数据)                                      |
 
 ## 4 蓝牙配网
 蓝牙配网一般流程
@@ -344,7 +344,7 @@ sdk会自动连接设备，建议您将用户和设备的绑定关系持久化�
 
 ```
 ### 4.1 扫描wifi
-小程序向体脂秤发起开始扫描指令，体脂秤自动发现附近可用并兼容的Wifi信息，然后回调给小程序。调用参考 [4](#4 蓝牙配网) 中的调用示例.
+小程序向体脂秤发起开始扫描指令，体脂秤自动发现附近可用并兼容的Wifi信息，然后回调给小程序。调用参考 [4](#4-蓝牙配网) 中的调用示例.
 数据类型 `ScanWifiReq` 没有参数
 
 ### 4.2 wifi数据
@@ -397,11 +397,11 @@ App发送Wifi SSID和密码到设备， 设备自动进行Wifi的连接过程，
 
 | 类名             |  dataType  | 说明                                                    |
 | :-------------  |:---:|:--------------------------------------------------------- |
-| ApInfo          |   apInfo |  wifi 列表数据    参考 [4.2](#4.2 wifi数据)                              |
-| ConfigStatus    |   configStatus | 配置wifi的结果  参考 [4.5](#4.5 ConfigStatus的数据结构)                            |
-| ScaleData       |   scale | 体重数据       参考 [5.1](#5.1 体重数据结构ScaleData)                                         |
-| BPData     |   bloodpressure | 血压数据          参考 [5.2](#5.2 血压数据结构BPData)                            |
-| WifiInfo        |   wifiInfo | 当前蓝牙设备配对的wifi   参考 [4.4](#4.4 WifiInfo的数据结构)                     |
+| ApInfo          |   apInfo |  wifi 列表数据    参考 [4.2](#42-wifi数据)                              |
+| ConfigStatus    |   configStatus | 配置wifi的结果  参考 [4.5](#45-configstatus的数据结构)                            |
+| ScaleData       |   scale | 体重数据       参考 [5.1](#51-体重数据结构scaledata)                                         |
+| BPData     |   bloodpressure | 血压数据          参考 [5.2](#52-血压数据结构bpdata)                            |
+| WifiInfo        |   wifiInfo | 当前蓝牙设备配对的wifi   参考 [4.4](#44-wifiinfo的数据结构)                     |
 
 ### 5.1 体重数据结构ScaleData
 | 属性            |  类型  | 说明                                                    |
