@@ -1,19 +1,16 @@
 # 乐心蓝牙设备小程序插件接入指南
 demo地址:https://github.com/leshiguang/LZBluetoothPluginDemo.git
 
+## 版本更新日志
 
-## 0、升级记录（显示最新的两个版本）
 #### 1.0.0
-    完成小程序插件的接入
+   * 完成小程序插件的接入
+
+   ---
  
-## 1、插件使用说明
-#### 1.0 插件使用申请
-
-请查看微信小程序插件使用官方文档：https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/using.html 当前小程序插件appId: wxe3d2a6ab8dd5b49b 需要申请并等待通过审核后方可使用本插件。
-
-#### 1.1 插件声明
-
-在app.json中声明插件的引用及appId:
+## 1 插件使用说明
+### 1.1 插件声明
+在app.json中声明插件的引用及小程序的appId:wxe3d2a6ab8dd5b49b，此时如果你之前没有使用过该插件，则会在console中报错“插件未授权 [添加插件](https://mp.weixin.qq.com/wxopen/plugindevdoc?appid=wxe3d2a6ab8dd5b49b&lang=zh_CN)”
 ```json
 {
   "plugins": {
@@ -25,143 +22,95 @@ demo地址:https://github.com/leshiguang/LZBluetoothPluginDemo.git
 }
 ```
 
-#### 1.2 插件引入
-
+### 1.2 插件引入
 ```javascript
-const lsPlugin = requirePlugin("lzbluetooth")
-// 打印插件的版本信息
-let version = plugin.getVersion();
+const lsPlugin = requirePlugin("lzbluetooth");
 ```
-
-#### 1.3 插件初始化
-
-建议在app.js的onLaunch方法中初始化插件，避免因系统的差异或系统蓝牙初始化延时，导致的接口功能异常。
-如果需要进行设备数据同步，还需要初始化插件鉴权信息(请看1.4)。
-```javascript
-const plugin = requirePlugin("lzbluetooth")
-
-App({
-  onLaunch: function () {
-    plugin.init({
-      appId: "com.leshiguang.saas.rbac.demo.appid",
-      logger: null,
-    });
-  }
-})
-```
-#### 1.4 插件鉴权初始化(v2.0.0及以上版本)
-> 发送邮件到以下邮箱申请appId。
-> 
-> 收件人：hezuo@leshiguang.com
-> 主题：【乐智健康服务准入申请】-（xx 企业/组织/个人）
-> 邮件正文：
-> 1、接入目的：（示例：（xx企业/组织/个人）-申请接入乐心服务，目的是借助xx（硬件型号）的数据能力帮助（xx企业/组织/个人）的用户完成健康管理）
-> 2、企业全称：
-> 3、联系人：
-> 4、联系人邮箱：
-> 5、联系人电话：
-> 6、联系人职位：
-> 7、接入应用：（小程序/app）
-> 8、应用名称：
-> 9、设备型号+工厂型号：如体脂称A20，GBF-2008-BF；（若为双模设备，如A20/S20/S30，则需在邮件中写明设备的sn码）
-> 本次接入硬件数量：如体脂秤5台
-> 10、接入的产品服务：【蓝牙SDK】，【体脂、睡眠算法】，【UI级SDK】，【乐智云Api服务】
-> 11、本次期望采购的硬件设备数量（多款设备分别陈述）：
-
-> 邮件发送后， 我们会在一个工作日内完成企业信息、订阅设备的初始化工作，并将申请的appId等信息通过邮件的形式回复给您
-> 申请成功将会收到乐心的回复，回复内容中会包含一下信息：
-> 1.appKey（appid）:对应一个应用
-> 2.appSecret:私钥
-> 3.tenantName：租户名缩写（用于h5页面版本管理）
-> 4.api权限表
-
-申请成功后，请通过下面代码初始化鉴权信息
+### 1.3 插件初始化
+[申请乐心AppKey](https://docs.leshiguang.com/develop-native/apply)
 ```javascript
   plugin.init({
     //用邮件乐心分配的appId替换掉下面字符串
-      appId: "com.leshiguang.saas.rbac.demo.appid",
+      appId: "你申请的appkey",
       logger: null,
     });
 ```
-
-
-## 2、接口定义
-
-#### 2.1 init
-  插件初始化
+## 2 设备相关
+### 2.1 搜索&发现设备
+蓝牙设备在绑定前，需要先通过扫描获得需要绑定的设备信息，
+首先需要调用`startScanning`接口获取`device`对象，
+您可能需要自己去判断释放有重复的蓝牙设备信号上报并做过滤，在实际应用过程中，
+您可能需要经过多个扫描周期才能获得蓝牙搜索结果，调用示例：
+   
 ```javascript
-  plugin.init({
-    //用邮件乐心分配的appId替换掉下面字符串
-      appId: "com.leshiguang.saas.rbac.demo.appid",
-      logger: null,
-    });
+// 开始扫描设备
+  plugin.startScanning(device => {
+    // 将扫描到的设备保存，具体参数参考具体接口
+    scanResults.push(device);
+    // 刷新UI
+    this.setData({
+      scanResults
+    })
+  }) 
 ```
-#### 2.2 getVersion
-  获取插件版本信息。
-```javascript
-  let version = plugin.getVersion();
-```
-#### 2.3 getConnectionState
-  获取当前设备的工作状态
-| 枚举         |  值   | 说明                                                         |
-| :----------- | :---: | :----------------------------------------------------------- |
-| None         |   0   | 初始状态                                                     |
-| Scan         |   1   | 扫描中                                                       |
-| Connecting   |   2   | 连接中                                                       |
-| Connected    |   3   | 蓝牙连接成功，还没有启动数据同步                             |
-| Syncing      |   4   | 已经启动数据同步，这是才能进行收数据，推送设置项等           |
-| Disconnected |   5   | 设备主动断开了连接，或者系统断开了连接                       |
-| SyncError    |   6   | 发起启动数据同步出现未知异常，和被动设备断开Disconnected区分 |
-| StopDataSync |   7   | 业务层主动停止了同步                                         |
+请求参数：
 
-```javascript
-  // mac 设备的唯一标识
-  let state = plugin.getConnectionState({mac}});
-```
+| 属性            |  类型  | 说明                                                         |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| callback(device) | func | 搜索到的设备对象的回调                                        |
 
-#### 2.4 startScanning
-  启动蓝牙扫描。
-```javascript
-  plugin.startScanning(res => {
-  });
-```
+`device` 的数据结构
 
-扫描回调信息
-
-| 字段名           |    类型     | 说明                                                   |
+| 属性           |    类型     | 说明                                                     |
 | :--------------- | :---------: | :----------------------------------------------------- |
-| name             |   String    | 蓝牙设备名称，某些设备可能没有                         |
-| localName        |   String    | 设当前蓝牙设备的广播数据段中的 LocalName 数据段        |
-| deviceId         |   string    | 用于区分设备的id，安卓为mac地址，IOS为系统分配的唯一ID |
+| name             |   String    | 蓝牙设备名称，某些设备可能没有                               |
+| localName        |   String    | 设当前蓝牙设备的广播数据段中的 LocalName 数据段              |
+| deviceId         |   string    | 用于区分设备的id，安卓为mac地址，IOS为系统分配的唯一ID       |
 | manufacturerData | ArrayBuffer | 广播服务                                               |
-| serviceUUIDs     |    Array    | 当前蓝牙设备的广播数据段中的 ServiceUUIDs              |
-| RSSI             |   number    | 当前蓝牙设备的信号强度                                 |
-| serviceData      |   object    | 当前蓝牙设备的广播数据段中的 ServiceData 数据段        |
+| serviceUUIDs     |    Array<String> | 当前蓝牙设备的广播数据段中的 ServiceUUIDs                |
+| RSSI             |   number    | 当前蓝牙设备的信号强度                                   |
+| serviceData      |   object    | 当前蓝牙设备的广播数据段中的 ServiceData 数据段            |
 | mac              |   String    | 设备mac地址                                            |
-| isSystemPaired   |   Boolean   | 是否已在系统的配对列表中 （手环专用）                  |
+| isSystemPaired   |   Boolean   | 是否已在系统的配对列表中 （手环专用）                      |
 | timestamp        |    Date     | 扫描回调信息                                           |
 
-
-
-#### 2.5 stopScanning
-  停止蓝牙扫描。
+### 2.2 停止搜索
+强制中断蓝牙搜索，执行搜索过程中中断搜索或页面销毁时，请务必调用停止搜索接口，否则会影响正常的连接流程：
 ```javascript
+  // 关闭搜索
   plugin.stopScanning();
 ```
 
-#### 2.6 bindDevice
-  绑定设备
+### 2.3 绑定设备
+搜索完成后， 向用户展示搜索到的设备列表信息， 用户选择目标设备后， 进行设备绑定操作（绑定设备是为了获取你选择设备的信息， 绑定不是必须的，如果您知道用户当前使用的设备信息， 可以不经过绑定直接调用`plugin.addMonitorDevice`去连接设备并同步数据）调用示例：
 ```javascript
-
+  // 用户选择某个设备绑定
   plugin.bindDevice({
-    mac: mac,
+    mac: mac,   
     callback: res => {
-      // 绑定状态， 如下表
+      // 绑定结果 
+      let mac = res.mac;
       let bindState = res.bindState;
+
     }
-  });
+  });  
 ```
-当前设备绑定状态枚举
+请求参数：`Object object`
+
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| mac             |   String | 绑定设备的mac                                    |
+| callback(`res`) |   func | 绑定设备的回调                                    |
+
+`res` 的数据结构
+
+| 属性            |  类型  | 说明                                                    |
+| :------------- | :---:  | :--------------------------------------------------------- |
+| mac           |   String | 绑定设备的mac                                    |
+| bindState      |   number | 绑定设备的状态                                    |
+
+`res.bindState` 的可能值
+
 | 枚举                   |  值   | 说明                                                  |
 | :--------------------- | :---: | :---------------------------------------------------- |
 | InputRandomNumber      |   0   | 输入随机数 (手环专用)                                 |
@@ -170,110 +119,151 @@ App({
 | AuthorizeFailure       |   6   | 鉴权失败                                              |
 | InputRandomNumberError |   7   | 输入随机码错误 (报这个错误是可以继续输入正确的随机码) |
 
-#### 2.7 cancelBind
-  取消设备的绑定
-  
+### 2.4 取消绑定
+当前状态是正在绑定的页面，此时退出绑定页面，则需要需要绑定 调用示例：
 ```javascript
-  plugin.cancelBind({ mac });
+// 取消绑定
+plugin.cancelBind({ mac });
 ```
+请求参数：`Object object`
 
-#### 2.8 addMonitorDevice
-  添加监听的设备
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| mac             |   String | 设备的mac                                        |
 
+### 2.5 添加用户已经绑定的设备
+用户打开app时， 若之前已经绑定过设备， 需要将已经绑定的设备的mac地址添加到sdk，
+sdk会自动连接设备，建议您将用户和设备的绑定关系持久化在云端， sdk初始化成功之后立即添加mac地址到sdk， 调用示例：
 ```javascript
-// 参数也可以是数组
-  plugin.addMonitorDevice({
-    mac: mac,
-    model: "设备型号"  // 绑定成功后可获取这个型号
-  }});
-```
-  
-#### 2.9 setMonitorDevice
-  设置监听的设备，与addMonitorDevice相比，这个方法会替换
-```javascript
-// 参数也可以是数组
-  plugin.setMonitorDevice({
-    mac: mac,
-    model: "设备型号"  // 绑定成功后可获取这个型号
+  /// 添加监听
+  plugin.addMonitorDevice({ 
+    mac: this.data.mac,
+    model: this.data.model,
+  })
+
+  // 替换目前已监听的
+  plugin.setMonitroDevice({ 
+    mac: this.data.mac,
+    model: this.data.model,
   })
 ```
 
-#### 2.10 deleteMonitorDevice
-  删除监听的设备
+请求参数：`Object object ｜ Object object[]`
 
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| mac             |   String | 绑定设备的mac                                        |
+| model           |   String | 设备型号                                             |
+
+
+### 2.6 删除用户正在连接或者同步的设备
+当用户需要解除监听设备或正在绑定中断绑定时，解绑后会删除SDK中的缓存的设备信息并断开蓝牙连接，建议您在解绑成功后，清除您App本地或者云端存储的设备信息，并删除和用户的绑定关系， 调用示例：
 ```javascript
-  plugin.deleteMonitorDevice({ mac });
+  /// 删除某个正在监听的设备
+  plugin.deleteMonitorDevice({ 
+    mac: this.data.mac,
+  })
+
+  // 删除全部正在监听的设备
+  plugin.deleteAllMonitorDevice({ 
+    mac: this.data.mac,
+    model: this.data.model,
+  })
+```
+### 2.7 设备状态的获取
+如果你想获取某个设备的连接状态，可以通过`getConnectionState`方法获取，如果你想蓝牙的可用状态可以调用`isBluetoothAvailable`判断是否可用，调用示例：
+```javascript
+// 当前蓝牙是否可用
+  let bluetoothAvalible = plugin.isBluetoothAvailable();
+  // mac 设备的唯一标识
+  let state = plugin.getConnectionState({mac}});
 ```
 
-#### 2.11 deleteAllMonitorDevice
-  删除所有监听的设备
+请求参数：`Object object`
 
-```javascript
-  plugin.deleteAllMonitorDevice();
-```
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| mac             |   String | 设备的mac                                        |
 
-#### 2.12 isBluetoothAvailable
-  获取当前蓝牙是否可用
+返回值：`number state`
 
+| 枚举         |  值   | 说明                                                         |
+| :----------- | :---: | :--------------------------------------------------------- |
+| None         |   0   | 初始状态                                                    |
+| Scan         |   1   | 扫描中                                                      |
+| Connecting   |   2   | 连接中                                                      |
+| Connected    |   3   | 蓝牙连接成功，还没有启动数据同步                                |
+| Syncing      |   4   | 已经启动数据同步，这是才能进行收数据，推送设置项等                 |
+| Disconnected |   5   | 设备主动断开了连接，或者系统断开了连接                           |
+| SyncError    |   6   | 发起启动数据同步出现未知异常，和被动设备断开Disconnected区分       |
+| StopDataSync |   7   | 业务层主动停止了同步                                          |
+
+### 2.8 设备数据或状态的监听
+如果你想监听手机蓝牙是否开启，设备的连接状态，及设备同步过来的数据，则可以使用 `plugin.$on` 监听某个事件，目前支持三个事件
+1. 手机蓝牙的开关 eventName = "adaptorState", 
+2. 蓝牙设备的连接状态 eventName = "connectionState",
+3. 蓝牙设备发送给小程序的数据 eventName = "dataReport"
+
+事件是通过 eventKey，同一事件的同一eventKey 回调会被覆盖
+取消监听则使用 `plugin.$off` 参数
+调用示例：
 ```javascript
-  let available = plugin.isBluetoothAvailable();
-```
-#### 2.13 $on
-  监听事件
-```javascript
-  export const AdaptorStateEventName = 'adaptorState';        // 蓝牙开关的回调
-  export const ConnectionStateEventName = 'connectionState';  // 监听设备的时候设备的回调
-  export const DataReportEventName = 'dataReport';            // 设备数据的回调
-  /**
-   * AdaptorState = 'adaptorState',//蓝牙状态改变回调
-   * ConnectionState = 'connectionState',//连接状态改变回调
-   * DataReport = 'dataReport', // 数据接收回调
-   */
-  /// 监听
+  // 监听蓝牙是否可用
   plugin.$on({
-    eventName: AdaptorStateEventName,
-    eventKey: 'wo',   /// 唯一标识，同一标识的监听会被覆盖
-    callback: onAdaptorState,
+    eventName: "adaptorState",
+    eventKey: "wo",   // 唯一标识，同一标识的监听会被覆盖
+    callback: res => {
+      // 蓝牙是否可用
+      let bluetoothAvalible = res.available
+    },
   });
 
+  // 监听设备的连接状态
   plugin.$on({
-    eventName: ConnectionStateEventName,
-    eventKey: 'shi',   /// 唯一标识，同一标识的监听会被覆盖
-    callback: onConnectionState,
+    eventName: "connectionState",
+    eventKey: 'wo',   // 唯一标识，同一标识的监听会被覆盖
+    callback: (mac, state) => {
+      // 设备mac，连接状态， 参考2.7 的连接状态
+    },
   });
 
+  // 监听数据上报
   plugin.$on({
-    eventName: DataReportEventName,
-    eventKey: 'shi',  /// 唯一标识，同一标识的监听会被覆盖
-    callback: onDataReport,
+    eventName: "dataReport",
+    eventKey: 'wo',  // 唯一标识，同一标识的监听会被覆盖
+    callback: (device, data) => {
+      // 设备信息， 数据信息
+      // 一般mac用来设备设备
+      let mac = device.mac;
+      // dataType 识别数据类型
+      let dataType = data.dataType;
+    },
   });
 
-function onAdaptorState(available) {
-  console.warn('app', "onAdaptorState", available);
-}
-
-function onConnectionState(mac, connectState) {
-  console.warn('app', 'onConnectionState', mac, connectState);
-}
-
-function onDataReport(device, dataReport) {
-  console.warn('app', 'onDataReport', device, dataReport);
-}
-```    
-#### 2.14 $off
-   取消监听事件
-
-```javascript
+  // 取消监听
   plugin.$off({
-    eventName,  // 事件名称
-    eventKey    // 唯一标识，同一标识的监听会被覆盖
+    eventname: "adaptorState",
+    eventKey: "wo"
   })
-```
-#### 2.15 pushSetting
-  向设备发送数据 数据的`setting`参数都是由`plugin.settingFactory`产生的
-  
+
+  plugin.$off({
+    eventname: "connectionState",
+    eventKey: "wo"
+  })
+
+  plugin.$off({
+    eventname: "dataReport",
+    eventKey: "wo"
+  })
+
+``` 
+
+## 3 设置项
+小程序向设备发送指令都是通过`pushSetting`
+包括手环绑定时候输入随机码，蓝牙配网的时候 发送扫描指令， 发送wifi连接指令，以及一些手设备的设置项等等
+调用示例：
 ```javascript
-  /// settingFactory
+  // 生产设置项的对象
   let settingFactory = plugin.settingFactory;
   let scanWifiSetting = new settingFactory.ScanWifiReq();
   plugin.pushSetting({
@@ -285,132 +275,166 @@ function onDataReport(device, dataReport) {
     wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
   });
 ```
-#### 2.16 settingFactory
-  设置工厂方法，所有的设置项都需要通过这个方法调用
+请求参数：`Object object`
+
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| mac             |   String | 设备的mac                                        |
+| setting         |   Object | 设置的对象，这个由 `settingFactory` 产生，不同的设置项，参数也不一样，具体参考各个设置项 |
+
+`settingFactory`的方法列表
+
+| 方法名           |  类型      | 说明                                                    |
+| :-------------  | :---:     | :--------------------------------------------------------- |
+| ScanWifiReq     |   func    | 扫描指令  参考 [4.1](#4.1 扫描wifi)                                      |
+| ConnectWifiReq  |   func    | 连接wifi指令  参考 [4.2](#4.2 wifi数据)                                      |
+
+## 4 蓝牙配网
+蓝牙配网一般流程
+1. 监听数据的接收
+2. 向蓝牙设备发送扫描wifi指令 （扫描wifi这个动作是蓝牙设备完成的，因为手机不能扫描附近的wifi设备）
+3. 通过监听的数据得到扫描到的wifi列表 
+4. 选中某个wifi 并输入密码， 然后向蓝牙设备发送指定wifi的连接指令 
+调用示例：
+
 ```javascript
   let settingFactory = plugin.settingFactory;
 
-  /// wifi扫描请求
-  let deviceSetting = new settingFactory.ScanWifiReq();
-
-  /// 配置wifi请求
-  let deviceSetting = new settingFactory.ConnectWifiReq({ 
-    bssid: bssid,   // wifi设备mac
-    password: password  //wifi 密码
+  // 监听设备向小程序同步数据
+   plugin.$on("dataReport", "wifiConfig", (device, dataReport) => {
+      if (dataReport.dataType === 'apInfo' || dataReport.dataType === 'wifiInfo') {
+        // 这里收到的的是wifi数据
+        this.addApToUI(dataReport);
+      } else if (dataReport.dataType === 'configStatus') {
+        // 这里收到的是连接wifi的状态结果
+        // 需要注意的是只需要认第一个回调为准，因为有可能返回多个状态
+        //配网结果回包 0 success || fail reason code
+        wx.hideLoading();
+        console.log('ui配网结果:', dataReport, dataReport.status === 0);
+        if (dataReport.status === 0) {
+          this.showErrorBack('配置Wi-Fi成功');
+        } else {
+          this.showErrorBack('配置Wi-Fi失败');
+        }
+      }
     });
-```
 
-
-#### 2.17 数据结构
-  参考代码注释
-```javascript
-/// 扫描wifi
-class ApInfo implements Data {
-  // 命令字
-  cmd: number;
-  // wifi广播名
-  ssid: string;
-  // wifi设备mac
-  bssid: string;
-  // 模式
-  mode: number;
-  // 型号强度
-  rssi: number;
-  // 是否已连接
-  connected: number;
-  // 数据类型
-  dataType: string = 'apInfo';
-}
-
-// 体脂秤的测量数据
-class ScaleData implements Data{
-  // 数据类型
-  dataType: string = "scale";
-  // 剩余测量数据条数
-  remainCount: number;
-  // 0=kg,1=lb,2=st,3=斤
-  unit: number;
-  // 体重
-  weight: number;
-  // utc
-  utc: number;
-  // 电阻值
-  resistance: number;
-  // 用户编号
-  userNumber: string | number;
-  // 时区
-  timeZone: any;
-  // 测量时间
-  timeStamp: string;
-  // 实时测量数据状态 (一般的秤没有这个值，主要用与秤的过程值)
-  realtimeDataStatus: boolean;
-}
-
-class ConfigStatus implements Data {
-  // 设备类型
-  dataType: string = 'configStatus';
-  // 设备id
-  deviceId: string;
-  // 0表示成功 1表示失败
-  status: number 
-}
-```
-
-## 3、设备绑定流程说明
-1. 先扫描到设备`plugin.startScanning`，
-2. 然后绑定某个设备`plugin.bindDevice`
-3. 监听连接同步状态`addListener(ConnectionStateEventName, 'bind', (mac, state) => { }`
-4. 监听数据上报回调`addListener(DataReportEventName, "bind", (device, data) => { }`
-
-```javascript
-// 监听设备
-  plugin.startScanning(res => {
-
-  })
-
-// 绑定设备
-  plugin.bindDevice({
+  let scanWifiSetting = new settingFactory.ScanWifiReq();
+  // 向设备发送搜索wifi指令
+  plugin.pushSetting({
     mac: mac,
-    callback: res => {
-      let bindState = res.bindState;
-    }
+    setting: scanWifiSetting
+  }).then((value) => {
+    console.info('发送指令获取wifi列表', value)
+  }).catch(_ => {
+    wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
   });
 
-  // 监听数据的上报
+  // 选中某个wifi 并输入密码，然后向设备发送指令
+  let deviceSetting = new settingFactory.ConnectWifiReq({ bssid: this.data.selectAp.bssid, password: this.data.password });
+    let options = {
+      mac: this.data.mac,
+      setting: deviceSetting
+    };
+    pushSetting(options).then(res => {
+      // 这里只能说明发送成功，具体是否成功则需要看dataReport.dataType === 'configStatus'的结果
+    }).catch(_ => {
+      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
+    });
 
-  plugin.$on(DataReportEventName, "bind", (device, data) => {
-    let msg = device.mac + '\n' + JSON.stringify(data);
-    that.appendLogText(msg);
-  });
-
-  // 监听设备的连接同步状态
-
-  plugin.$on(ConnectionStateEventName, 'bind', (mac, state) => {
-    // 设备的状态发生改变
-  })  
 ```
+### 4.1 扫描wifi
+小程序向体脂秤发起开始扫描指令，体脂秤自动发现附近可用并兼容的Wifi信息，然后回调给小程序。调用参考 [4](#4 蓝牙配网) 中的调用示例.
+数据类型 `ScanWifiReq` 没有参数
 
-## 4、设备数据同步流程说明
-1. 调用`plugin.addMonitorDevice`，
-2. 监听连接同步状态`plugin.$on(ConnectionStateEventName, 'bind', (mac, state) => { }`
-3. 监听数据上报回调`plugin.$on(DataReportEventName, "bind", (device, data) => { }`
+### 4.2 wifi数据
+`ApInfo`的数据结构
 
-```javascript
+| 属性            |  类型   | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| cmd             |   number | 指令，内部使用                                        |
+| ssid         |   String | wifi名称                                              |
+| bssid         |   String | wifi设备的mac                                         |
+| mode         |   String |  Open (0), WEP (1), WPA_PSK (2), WPA2_PSK (3), WPA_WPA_2_PSK(4), WPA2_ENTERPRISE (5).  |
+| rssi         |   String | 信号强度                                              |
+| connected         |   String | 是否连接                                          |
+| dataType         |   String | 数据类型 这里固定为 `apInfo`                         |
 
-  // 监听数据的上报
-  plugin.$on(DataReportEventName, "bind", (device, data) => {
-    let msg = device.mac + '\n' + JSON.stringify(data);
-    that.appendLogText(msg);
-  });
+### 4.3 配置wifi
+App发送Wifi SSID和密码到设备， 设备自动进行Wifi的连接过程， 并将连接结果回调给APP
+数据类型 `ConnectWifiReq` 参数如下:
 
-  // 监听设备的连接同步状态
-  plugin.$on(ConnectionStateEventName, 'bind', (mac, state) => {
-    // 设备的状态发生改变
-  })  
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| bssid             |   String | 设备的mac                                        |
+| password         |   String | 输入的密码                                          |
 
-  /// 添加监听
-  plugin.addMonitorDevice({ 
-    mac: this.data.mac,
-    model: this.data.model,
-  })
-```
+### 4.4 WifiInfo的数据结构
+这个数据是获取当前的配网信息的信息结果（获取配网信息目前没有暴露接口）
+
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| cmd             |   number | 指令，内部使用                                        |
+| ssid            |   String | wifi名称                                              |
+| bssid           |   String | wifi设备的mac                                         |
+| status         |   number | return success (0) or failed reason code (1)       |
+| rssi           |   number | 信号强度                                              |
+| ip             |   String | ip地址                                                |
+| dataType       |   String | 固定值为 `wifiInfo`                                |
+
+### 4.5 ConfigStatus的数据结构
+这个是连接wifi的结果的数据结果
+
+| 属性            |  类型  | 说明                                                    |
+|:-------------  |:---:|:--------------------------------------------------------- |
+| cmd             |   number | 指令，内部使用                                        |
+| status            |   number |  eturn success (0) or failed reason code (1)        |
+| dataType       |   String | 固定值为 `configStatus`                              |
+
+## 5 数据接收
+当你监听了dataReport 事件的时候的回调
+下表为数据类型和实例对照表
+
+| 类名             |  dataType  | 说明                                                    |
+| :-------------  |:---:|:--------------------------------------------------------- |
+| ApInfo          |   apInfo |  wifi 列表数据    参考 [4.2](#4.2 wifi数据)                              |
+| ConfigStatus    |   configStatus | 配置wifi的结果  参考 [4.5](#4.5 ConfigStatus的数据结构)                            |
+| ScaleData       |   scale | 体重数据       参考 [5.1](#5.1 体重数据结构ScaleData)                                         |
+| BPData     |   bloodpressure | 血压数据          参考 [5.2](#5.2 血压数据结构BPData)                            |
+| WifiInfo        |   wifiInfo | 当前蓝牙设备配对的wifi   参考 [4.4](#4.4 WifiInfo的数据结构)                     |
+
+### 5.1 体重数据结构ScaleData
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| remainCount     |   number | 剩余测量数据条数                                        |
+| unit            |   number | 0=kg,1=lb,2=st,3=斤                                              |
+| weight           |   number | 体重 (单位kg)                                |
+| utc            |   number  |    utc                                 |
+| resistance    |   number | 电阻值                                           |
+| userNumber    |   number | 用户编号                                                |
+| timeZone      |   number | 时区 （缺失，使用当前系统的时区）                                           |
+| timeStamp     |   number | 测量时间 （请使用utc）                                              |
+| realtimeDataStatus  |   boolean | 实时测量数据状态                                                |
+| dataType       |   String | 固定值为 `scale`                                |
+
+### 5.2 血压数据结构BPData
+| 属性            |  类型  | 说明                                                    |
+| :-------------  | :---:  | :--------------------------------------------------------- |
+| remainCount     |   number | 剩余测量数据条数                                        |
+| unit            |   number | 0=mmkg,1=Kpa (kpa目前没有使用)                                           |
+| systolic        |   number | 高压                               |
+| diastolic       |   number | 低压                              |
+| meanPressure       |   number | 平均值                              |
+| pulseRate       |   number | 心率                              |
+| utc            |   number  |    utc                                 |
+| resistance    |   number | 电阻值                                           |
+| userId    |   number | 用户编号                                                |
+| timeZone      |   number | 时区 （缺失，使用当前系统的时区）                                           |
+| timeStamp     |   number | 测量时间 （请使用utc）                                              |
+| bodyMovementDetection  |   boolean | 体动数据                                                |
+| cuffFitDetection  |   boolean | 袖带检测数据                                                |
+| irregularPulseDetection  |   boolean | 心率不齐信息                                               |
+| pulseOut  |   boolean | 心率超量程                                               |
+| dataType       |   String | 固定值为 `bloodpressure`                                |
+
+

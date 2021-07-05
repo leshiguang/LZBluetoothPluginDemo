@@ -90,7 +90,7 @@ Page({
           that.appendLogText(JSON.stringify(e));
         });
 
-        getWeightIndexCalculateAndAnalysisResult({
+        getforeignWeightAlgorithmResult({
           weight: data.weight,
           age: 20,
           sex: 1, // 1男 2女
