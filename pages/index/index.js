@@ -46,7 +46,6 @@ Page({
     removeListener(AdaptorStateEventName, 'index');
   },
 
-
   onReady() {
     let isBluetoothEnable = isBluetoothAvailable();
     this.setData({

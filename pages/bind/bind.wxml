@@ -1,22 +1,50 @@
-<view class='flex-wrp-row item'>
-  <view class='item-left flex-wrp-row'>
-    <view class='list-right'>
-      <view class='title'>{{name}}[{{mac}}]:{{deviceId}}</view>
-      <view class='connected-status'>{{statusMsg}}</view>
-    </view>
+<view class="header">
+  <view class="content">
+    <view class="title">{{name}}[{{mac}}]:{{deviceId}}</view>
+    <view>{{statusMsg}}</view>
   </view>
 </view>
-<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
-<view class='settingView'>
-  <button class='connectBtn' bindtap='restartReceiveData'>重新监听</button>
-  <button class='connectBtn' bindtap='stopReceiveData'>删除监听</button>
-  <button class='connectBtn' bindtap='configWifi'>wifi配网按钮</button>
+<view wx:if="{{connectState==4}}" class="container">
+  <view class="item" bindtap="goToOta">
+    <view>设备升级</view>
+    <view class="flex-inline">
+      <span class="info">{{ device.softwareVersion }}</span>
+      <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
+    </view>
+  </view>
+  <view class="item" bindtap="goGuide">
+    <view>操作指南</view>
+    <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
+  </view>
+  <view class="item" bindtap="configWifi">
+    <view>Wi-Fi配置</view>
+    <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
+  </view>
+  <view class="item">
+    <view>心率开关</view>
+    <switch checked="{{heartRateEnable}}" bindchange="heartRateSwitch" />
+  </view>
+  <view class="item" bindtap="unitSet">
+    <view>单位设置</view>
+    <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+      <view class="picker">当前选择：{{array[index]}}</view>
+    </picker>
+  </view>
+  <view class="item" bindtap="reset">
+    <view>重置</view>
+  </view>
+  <view class="item" bindtap="clipSN">
+    <view>设备SN号</view>
+    <view class="info">{{deviceInfo.sn}}</view>
+  </view>
 </view>
-<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<view class="button" bindtap="bindDevice">绑定设备</view>
+<view class="button" bindtap="stopReceiveData">删除设备</view>
+<view class="button" bindtap="restartReceiveData">重新监听</view>
 <!-- 输入验证码 -->
-<!-- <view class="code" v-if="bindState === 0 && isBinding === true">
+<view class="code" wx:if="{{bindState === 0 && isBinding === true}}">
   <input placeholder="请输入随机码" maxlength="6" class="input" type="number" focus="{{focus}}" bindinput="bindKeyInput" />
-</view> -->
+</view>
 <view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
 <scroll-view scroll-y="true" class='logText' enable-flex="true">
   <span>日志输出:(可以滚动查看)</span>

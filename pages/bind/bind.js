@@ -37,6 +37,10 @@ Page({
     logText: '',
     focus: false,
     model: '',
+    heartRateEnable: true,
+    deviceInfo: {},
+    array: ["Kg", "Lb", "St", "Jin"],
+    index: 0,
   },
 
   /**
@@ -60,48 +64,42 @@ Page({
     });
 
     addListener(DataReportEventName, "bind", (device, data) => {
+      if (this.data.mac != device.mac) {
+        return;
+      }
+
       let msg = device.mac + '\n' + JSON.stringify(data);
       that.appendLogText(msg);
 
       if (data.dataType === 'scale') {
         console.info('收到了体重数据');
-        // test
-        getWeightIndexCalculateResult({
-          weight: data.weight,
-          age: 20,
-          sex: 1, // 1男 2女
-          height: 1.70,
-          resistance: data.resistance ?? 10
-        }).then((value) => {
-          that.appendLogText(JSON.stringify(value));
-        }).catch(e => {
-          that.appendLogText(JSON.stringify(e));
-        });
 
-        getWeightIndexCalculateAndAnalysisResult({
-          weight: data.weight,
-          age: 20,
-          sex: 1, // 1男 2女
-          height: 1.70,
-          resistance: data.resistance ?? 500
-        }).then((value) => {
-          that.appendLogText(JSON.stringify(value));
-        }).catch(e => {
-          that.appendLogText(JSON.stringify(e));
-        });
+        /** 只有在有电阻的情况下才调用算法 */ 
+        if (data.resistance && data.resistance > 0) {
+          getWeightIndexCalculateResult({
+            weight: data.weight,
+            age: 20,
+            sex: 1, // 1男 2女
+            height: 1.70,
+            resistance: data.resistance
+          }).then((value) => {
+            that.appendLogText(JSON.stringify(value));
+          }).catch(e => {
+            that.appendLogText(JSON.stringify(e));
+          });
 
-        getforeignWeightAlgorithmResult({
-          weight: data.weight,
-          age: 20,
-          sex: 1, // 1男 2女
-          height: 1.70,
-          resistance: data.resistance ?? 300
-        }).then((value) => {
-          that.appendLogText(JSON.stringify(value));
-        }).catch(e => {
-          that.appendLogText(JSON.stringify(e));
-        });
-
+          getWeightIndexCalculateAndAnalysisResult({
+            weight: data.weight,
+            age: 20,
+            sex: 1, // 1男 2女
+            height: 1.70,
+            resistance: data.resistance
+          }).then((value) => {
+            that.appendLogText(JSON.stringify(value));
+          }).catch(e => {
+            that.appendLogText(JSON.stringify(e));
+          });
+        }
       }
     });
 
@@ -114,17 +112,28 @@ Page({
       that.appendLogText(logText);
       that.setData({
         statusMsg: logText,
+        connectState: state,
       })
-
     });
 
+
+  },
+
+  onUnload: function () {
+    // cancelBind({ 
+    //   mac: this.data.mac
+    // })
+  },
+
+  bindDevice: function () {
+    this.appendLogText("绑定中");
     this.setData({
       isBinding: true
     })
-
+    let that = this;
     /// 绑定设备
     bindDevice({
-      mac: obj.mac,
+      mac: this.data.mac,
       callback(res) {
         // 回调
         console.debug('bind', 'bindDevice', res);
@@ -139,49 +148,58 @@ Page({
             model: model,
           })
         }
-        
-        that.setData({
-          bindState,
-          statusMsg,
-        }),
 
-        that.appendLogText(statusMsg + '\n' + JSON.stringify(res.deviceInfo));
+        let isBinding = false;
+        if (bindState == 0 || bindState == 7 ) {
+          isBinding = true;
+        }
+
+        if (res.deviceInfo) {
+          that.setData({
+            bindState,
+            statusMsg,
+            isBinding,
+            deviceInfo: res.deviceInfo,
+          });
+          that.appendLogText(statusMsg + '\n' + JSON.stringify(res.deviceInfo));
+        } else {
+          that.setData({
+            bindState,
+            statusMsg,
+            isBinding,
+          });
+          that.appendLogText(statusMsg);
+        }
+
       }
     })
-
   },
 
-  onUnload: function () {
-    // cancelBind({ 
-    //   mac: this.data.mac
-    // })
-  },
-
-  restartReceiveData: function () {
-    console.log('重新开始接收数据', this.data.mac, this.data.model);
+  restartReceiveData() {
+    console.debug('重新开始接收数据', this.data.mac, this.data.model);
     /// 添加监听
-    addMonitorDevice({ 
+    addMonitorDevice({
       mac: this.data.mac,
       model: this.data.model,
     })
   },
 
-  stopReceiveData: function () {
-    console.log('停止接收数据');
+  stopReceiveData() {
+    console.debug('停止接收数据');
     deleteMonitorDevice({
       mac: this.data.mac,
     })
   },
 
   configWifi: function () {
-    console.log('wifi 配网');
+    console.debug('wifi 配网');
     wx.navigateTo({
       url: '../wifiConfig/wifiConfig?mac=' + this.data.mac + '&name=' + this.data.name
     })
   },
 
   bindKeyInput: function (e) {
-    console.log('bindkeyInput', e.detail.value);
+    console.debug('bindkeyInput', e.detail.value);
     let code = e.detail.value;
     if (code.length === 6) {
       this.sendRandomCode(code);
@@ -192,6 +210,7 @@ Page({
   },
 
   sendRandomCode: function (code) {
+    console.debug("发送随机码")
     let setting = new settingFactory.RandomNumSetting(code);
     let options = {
       mac: this.data.mac,
@@ -210,6 +229,36 @@ Page({
     });
 
   },
+
+  heartRateSwitch: function (event) {
+    let enable = event.detail.value;
+    let setting = new settingFactory.A6HeartRateSetting(enable);
+    console.debug("event", enable, setting);
+    pushSetting({
+      mac: this.data.mac,
+      setting
+    }).then().catch( res => {
+      this.setData({
+        heartRateEnable: !enable
+      })
+    });
+  },
+
+  bindPickerChange(event) {
+    console.log('picker发送选择改变，携带值为', event.detail.value)   
+    let index = event.detail.value; 
+    let setting = new settingFactory.A6UnitSetting(event.detail.value);
+    pushSetting({
+      mac: this.data.mac,
+      setting
+    }).then(_ => {
+      this.setData({
+        index
+      })
+    })
+  }
+
+
 
 
 });

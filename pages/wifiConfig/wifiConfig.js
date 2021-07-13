@@ -165,11 +165,7 @@ Page({
       mac: this.data.mac,
       setting: deviceSetting
     };
-    pushSetting(options).then(res => {
-      wx.showToast({ title: "设置成功", icon: "none", duration: 3000 });
-    }).catch(_ => {
-      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
-    });
+    pushSetting(options)
 
     //增加一个超时逻辑
     if (this._connectTimeout) clearTimeout(this._connectTimeout);
@@ -231,10 +227,6 @@ Page({
       mac: this.data.mac,
       setting: deviceSetting
     }
-    pushSetting(options).then((value) => {
-      console.info('发送指令获取wifi列表', value)
-    }).catch(_ => {
-      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
-    });
+    pushSetting(options);
   }
 })

@@ -89,7 +89,18 @@ export function cancelBind(options) {
  * @param { mac, setting } options
  */
 export function pushSetting(options) {
-  return plugin.pushSetting(options);
+  return new Promise((resolve, reject) => {
+    plugin.pushSetting(options).then(_ => {
+      console.warn('设置成功');
+      wx.showToast({ title: "设置成功", icon: "none", duration: 3000 });
+      resolve();
+    }).catch(error => {
+      console.warn("设置失败", error)
+      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
+      reject();
+    });
+  })
+   
 }
 
 /**
