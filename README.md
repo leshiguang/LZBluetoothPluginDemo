@@ -2,9 +2,16 @@
 demo地址:https://github.com/leshiguang/LZBluetoothPluginDemo.git
 
 ## 版本更新日志
-
+#### 1.0.3
+  * 增加体脂秤的心率开关
+  * 增加体脂秤的单位设置
+  * 增加体脂秤绑定时的设备数据 电量
+#### 1.0.2
+  * 优化连接问题
+#### 1.0.1
+  * 解决安卓手机无法连接的问题
 #### 1.0.0
-   * 完成小程序插件的接入
+  * 完成小程序插件的接入
 
    ---
  
@@ -108,6 +115,7 @@ const lsPlugin = requirePlugin("lzbluetooth");
 | :------------- | :---:  | :--------------------------------------------------------- |
 | mac           |   String | 绑定设备的mac                                    |
 | bindState      |   number | 绑定设备的状态                                    |
+| deviceInfo      |   Object | 设备信息                                    |
 
 `res.bindState` 的可能值
 
@@ -118,6 +126,21 @@ const lsPlugin = requirePlugin("lzbluetooth");
 | Failure                |   5   | 绑定失败                                              |
 | AuthorizeFailure       |   6   | 鉴权失败                                              |
 | InputRandomNumberError |   7   | 输入随机码错误 (报这个错误是可以继续输入正确的随机码) |
+
+`res.deviceInfo`的数据结构
+
+| 属性            |  类型  | 说明                                                    |
+| :------------- | :---:  | :--------------------------------------------------------- |
+| deviceId       |   String | 设备的广播id                                   |
+| model           |   string | 设备的型号                                      |
+| lzDeviceId      |   string | id（内部使用的id）                                    |
+| sn              |   string |  一般对用户可见（比如手环在表带上）                    |
+| hardwareVersion |   string |  硬件版本                                        |
+| firmwareVersion |   string |  固件版本                                        |
+| softwareVersion |   string |  软件版本                                        |
+| manufacture     |   string |  厂家名字                                   |
+| battery         |   number |  电量                                   |
+
 
 ### 2.4 取消绑定
 当前状态是正在绑定的页面，此时退出绑定页面，则需要需要绑定 调用示例：
@@ -286,8 +309,26 @@ sdk会自动连接设备，建议您将用户和设备的绑定关系持久化�
 
 | 方法名           |  类型      | 说明                                                    |
 | :-------------  | :---:     | :--------------------------------------------------------- |
-| ScanWifiReq     |   func    | 扫描指令  参考 [4.1](#41-扫描wifi)                                      |
-| ConnectWifiReq  |   func    | 连接wifi指令  参考 [4.2](#42-wifi数据)                                      |
+| ScanWifiReq     |   func    | 扫描指令  参考 [4.1](#4.1 扫描wifi)                           |
+| ConnectWifiReq  |   func    | 连接wifi指令  参考 [4.2](#4.2 wifi数据)                           |
+| A6HeartRateSetting  |   func    | 连接wifi指令  参考 [3.1](#3.1 体脂秤心率开关)                           |
+| A6UnitSetting  |   func    | 连接wifi指令  参考 [3.2](#3.2 体脂秤单位设置)                           |
+
+### 3.1 体脂秤心率开关
+控制体脂秤测量心率的开关
+`A6HeartRateSetting` 的参数
+
+| 属性            |  类型  | 说明                                                    |
+| :------------- | :---:  | :--------------------------------------------------------- |
+| enable       |   boolean | 开关心率                                               |
+
+### 3.2 体脂秤单位设置
+控制体脂秤单位的显示
+`A6UnitSetting` 的参数
+
+| 属性            |  类型  | 说明                                                    |
+| :------------- | :---:  | :--------------------------------------------------------- |
+| unit         |   number | 0表示kg 1和2 表示Lb  3表示斤                                  |
 
 ## 4 蓝牙配网
 蓝牙配网一般流程
@@ -344,7 +385,7 @@ sdk会自动连接设备，建议您将用户和设备的绑定关系持久化�
 
 ```
 ### 4.1 扫描wifi
-小程序向体脂秤发起开始扫描指令，体脂秤自动发现附近可用并兼容的Wifi信息，然后回调给小程序。调用参考 [4](#4-蓝牙配网) 中的调用示例.
+小程序向体脂秤发起开始扫描指令，体脂秤自动发现附近可用并兼容的Wifi信息，然后回调给小程序。调用参考 [4](#4 蓝牙配网) 中的调用示例.
 数据类型 `ScanWifiReq` 没有参数
 
 ### 4.2 wifi数据
@@ -397,11 +438,11 @@ App发送Wifi SSID和密码到设备， 设备自动进行Wifi的连接过程，
 
 | 类名             |  dataType  | 说明                                                    |
 | :-------------  |:---:|:--------------------------------------------------------- |
-| ApInfo          |   apInfo |  wifi 列表数据    参考 [4.2](#42-wifi数据)                              |
-| ConfigStatus    |   configStatus | 配置wifi的结果  参考 [4.5](#45-configstatus的数据结构)                            |
-| ScaleData       |   scale | 体重数据       参考 [5.1](#51-体重数据结构scaledata)                                         |
-| BPData     |   bloodpressure | 血压数据          参考 [5.2](#52-血压数据结构bpdata)                            |
-| WifiInfo        |   wifiInfo | 当前蓝牙设备配对的wifi   参考 [4.4](#44-wifiinfo的数据结构)                     |
+| ApInfo          |   apInfo |  wifi 列表数据    参考 [4.2](#4.2 wifi数据)                              |
+| ConfigStatus    |   configStatus | 配置wifi的结果  参考 [4.5](#4.5 ConfigStatus的数据结构)                            |
+| ScaleData       |   scale | 体重数据       参考 [5.1](#5.1 体重数据结构ScaleData)                                         |
+| BPData     |   bloodpressure | 血压数据          参考 [5.2](#5.2 血压数据结构BPData)                            |
+| WifiInfo        |   wifiInfo | 当前蓝牙设备配对的wifi   参考 [4.4](#4.4 WifiInfo的数据结构)                     |
 
 ### 5.1 体重数据结构ScaleData
 | 属性            |  类型  | 说明                                                    |
@@ -415,6 +456,7 @@ App发送Wifi SSID和密码到设备， 设备自动进行Wifi的连接过程，
 | timeZone      |   number | 时区 （缺失，使用当前系统的时区）                                           |
 | timeStamp     |   number | 测量时间 （请使用utc）                                              |
 | realtimeDataStatus  |   boolean | 实时测量数据状态                                                |
+| heartRate  |   number | 心率                                               |
 | dataType       |   String | 固定值为 `scale`                                |
 
 ### 5.2 血压数据结构BPData
