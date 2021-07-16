@@ -112,17 +112,11 @@ Page({
     let apSsidFilter = this.data.apSsidFilter ?? [];
     let apList = this.data.apList ?? [];
     let index = apSsidFilter.indexOf(apInfo.ssid);
-    if (index < 0) {
-      if (apInfo.ssid.length > 0) {
-        apSsidFilter.push(apInfo.ssid);
-        apList.push(apInfo);
-      }
-    } else {
-      if (apInfo.rssi > apList[index].rssi) {
-        //如果信号比他强,替换bssid
-        apList[index].bssid = apInfo.bssid;
-      }
+    if (apInfo.ssid.length > 0) {
+      apSsidFilter.push(apInfo.ssid);
+      apList.push(apInfo);
     }
+
     this.setData({
       apList,
       apSsidFilter
@@ -140,7 +134,7 @@ Page({
 
   onClickAp(event) {
     let ap = event.target.dataset.result;
-    console.log(event, ap)
+    console.debug("xxxxxxxxxxxx", event, ap)
 
     this.setData({
       isStartConnect: false,

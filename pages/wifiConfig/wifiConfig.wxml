@@ -10,9 +10,10 @@
     <p class="title page2">请选择一个Wi-Fi网络进行配置:</p>
     <image wx:if="apList.length===0" class="loading" src="https://files.lifesense.com/other/20200928/23b6c8fbd83844eeb3f843ee35f10070.png" />
     <scroll-view class="scroll" scroll-y="true">
-      <view wx:for="{{apList}}" wx:key="ssid" wx:for-item="result" data-result="{{result}}" bindtap="onClickAp" class="ap-wrap">
+      <view wx:for="{{apList}}" wx:key="unique" wx:for-item="result" data-result="{{result}}" bindtap="onClickAp" class="ap-wrap">
         <view class="ap-ssid">{{result.ssid}}</view>
         <view class="icon-warp">
+          <view class="ap-ssid">{{result.rssi}}</view>
           <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/200aefd849764eb0818074636fe069ed.png" />
           <image class="arrow-icon" src="https://files.lifesense.com/other/20200928/1d4c1041cec9436daaa66d962c7acfd2.png" />
         </view>
