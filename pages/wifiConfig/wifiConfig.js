@@ -27,7 +27,7 @@ Page({
     textFocus: true,
     password: '',
     pageType: 0,// 0guide   1wifi列表  2输入wifi 3配置成功 4失败
-    selectAp: { ssid: '' },
+    selectAp: { ssid: '703a730605fc' },
     apList: [
       {
         bssid: "703a730605fc",
@@ -109,8 +109,8 @@ Page({
     console.info('add ui', apInfo);
     if (!apInfo || !apInfo.ssid) return;
 
-    let apSsidFilter = this.data.apSsidFilter ?? [];
-    let apList = this.data.apList ?? [];
+    let apSsidFilter = this.data.apSsidFilter || [];
+    let apList = this.data.apList || [];
     let index = apSsidFilter.indexOf(apInfo.ssid);
     if (apInfo.ssid.length > 0) {
       apSsidFilter.push(apInfo.ssid);
@@ -217,6 +217,24 @@ Page({
   // 获取wifi列表
   getWifiList() {
     let deviceSetting = new settingFactory.ScanWifiReq();
+    let options = {
+      mac: this.data.mac,
+      setting: deviceSetting
+    }
+    pushSetting(options);
+  },
+
+  getWifiStatus() {
+    let deviceSetting = new settingFactory.WifiStatusReq();
+    let options = {
+      mac: this.data.mac,
+      setting: deviceSetting
+    }
+    pushSetting(options);
+  },
+
+  retset() {
+    let deviceSetting = new settingFactory.WifiResetReq();
     let options = {
       mac: this.data.mac,
       setting: deviceSetting

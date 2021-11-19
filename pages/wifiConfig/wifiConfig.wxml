@@ -46,4 +46,6 @@
     <p class="tips">{{bindFailTips}}</p>
     <button bindtap="onClickRetry" class="button retry">重试</button>
   </view>
+  <!-- <button bindtap="getWifiStatus" >获取当前已配置wifi</button>
+  <button bindtap="retset"> 重置wifi</button> -->
 </view>

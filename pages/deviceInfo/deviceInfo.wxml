@@ -1,0 +1,23 @@
+<!-- miniprogram/pages/deviceInfo/deviceInfo.wxml -->
+<view class="header">
+    <view class="content">
+        <text class="title">设备名称: {{device.name}}</text>
+        <text class="title">mac: {{device.mac}}</text>
+        <text class="title">sn: {{device.sn}}</text>
+        <text class="title">型号: {{device.model}}</text>
+        <text class="title">固件版本: {{device.firmwareVersion}}</text>
+    </view>
+</view>
+
+<scroll-view class="container" scroll-y="true" enable-flex="true">
+    <view wx:for="{{settings}}" wx:key="unique" wx:for-item="setting"  class="item">
+        <view>{{setting.name}}</view>
+        <button  data-result="{{setting}}" bindtap="onClinkGetItem" >获取设置项</button>
+        <button  data-result="{{setting}}" bindtap="onClinkSetItem" >设置</button>
+        <view class="flex-inline">
+            <span class="info">{{setting.value}}</span>
+
+            <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
+        </view>
+    </view>
+</scroll-view>

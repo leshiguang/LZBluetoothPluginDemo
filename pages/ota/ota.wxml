@@ -1,0 +1,26 @@
+<!--miniprogram/pages/ota/ota.wxml-->
+<text>miniprogram/pages/ota/ota.wxml</text>
+<view class="container">
+    <view class="item" bindtap="start">
+        <view>开始</view>
+    </view>
+    <view class="item" bindtap="stop">
+        <view>结束</view>
+    </view>
+    <view class="item" bindtap="clearLog">
+        <view>清除日志</view>
+    </view>
+    
+</view>
+
+<scroll-view class="container" scroll-y="true" enable-flex="true">
+    <view wx:for="{{list}}" wx:key="unique" wx:for-item="item"  class="item">
+        <view bindtap="selectFilePath" data-text="{{index}}">{{item.name}}</view>
+    </view>
+</scroll-view>
+
+<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<scroll-view scroll-y="true" class='logText' enable-flex="true">
+    <span>日志输出:(可以滚动查看)</span>
+    <text selectable="true" class="text">{{logText}}</text>
+</scroll-view>

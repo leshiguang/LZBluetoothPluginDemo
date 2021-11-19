@@ -1,7 +1,6 @@
 //获取应用实例
 import {
   AdaptorStateEventName,
-  ConnectionStateEventName,
   DataReportEventName,
   addListener,
   bindDevice,
@@ -10,7 +9,8 @@ import {
   addMonitorDevice,
   deleteMonitorDevice,
   bindStateMsg,
-  connectStateMsg
+  connectStateMsg,
+  DeviceStateChangedName
 
 } from '../../DeviceManager'
 
@@ -29,6 +29,7 @@ Page({
   data: {
     mac: '',
     name: '',
+    model: '',
     statusMsg: '',
     connectState: 0,  // 连接状态
     isBinding: false, // 是否正在绑定
@@ -36,7 +37,6 @@ Page({
     code: '',
     logText: '',
     focus: false,
-    model: '',
     heartRateEnable: true,
     deviceInfo: {},
     array: ["Kg", "Lb", "St", "Jin"],
@@ -67,9 +67,10 @@ Page({
       if (this.data.mac != device.mac) {
         return;
       }
-
       let msg = device.mac + '\n' + JSON.stringify(data);
       that.appendLogText(msg);
+
+
 
       if (data.dataType === 'scale') {
         console.info('收到了体重数据');
@@ -103,26 +104,20 @@ Page({
       }
     });
 
-    addListener(ConnectionStateEventName, 'bind', (mac, state) => {
-      if (this.data.mac != mac) {
+    addListener(DeviceStateChangedName, 'bind', (device) => {
+      if (this.data.mac != device.mac) {
         return;
       }
 
-      let logText = connectStateMsg(state);
+      let logText = connectStateMsg(device.connectStatus);
       that.appendLogText(logText);
       that.setData({
         statusMsg: logText,
-        connectState: state,
+        connectState: device.connectStatus,
+        deviceInfo: device
       })
     });
 
-
-  },
-
-  onUnload: function () {
-    // cancelBind({ 
-    //   mac: this.data.mac
-    // })
   },
 
   bindDevice: function () {
@@ -131,6 +126,7 @@ Page({
       isBinding: true
     })
     let that = this;
+
     /// 绑定设备
     bindDevice({
       mac: this.data.mac,
@@ -191,13 +187,6 @@ Page({
     })
   },
 
-  configWifi: function () {
-    console.debug('wifi 配网');
-    wx.navigateTo({
-      url: '../wifiConfig/wifiConfig?mac=' + this.data.mac + '&name=' + this.data.name
-    })
-  },
-
   bindKeyInput: function (e) {
     console.debug('bindkeyInput', e.detail.value);
     let code = e.detail.value;
@@ -227,7 +216,6 @@ Page({
     this.setData({
       logText: text + this.data.logText,
     });
-
   },
 
   heartRateSwitch: function (event) {
@@ -256,9 +244,60 @@ Page({
         index
       })
     })
+  },
+
+  startJumpDeviceInfo(event) {
+    wx.navigateTo({
+      url: '../deviceInfo/deviceInfo?mac=' + this.data.mac + '&name=' + this.data.name + '&model=' + this.data.model
+    })
+  },
+
+  gotoOta(event) {
+    wx.navigateTo({
+      url: '../ota/ota?mac=' + this.data.mac + '&name=' + this.data.name + '&model=' + this.data.model
+    })
+  },
+
+  hasGps(event) {
+    
+    // close = 0,       // gps关闭
+    // willGetGps = 1,  // 去获取gps
+    // didGetGps = 3,  // 已经获取gps定位
+    // reject = 0x80,  // 拒绝发起运动
+    let setting = new settingFactory.SportStatusSetting(3);
+    let options = {
+      mac: this.data.mac,
+      setting
+    }
+    pushSetting(options);
+  },
+
+  notHasGps(event) {
+    let setting = new settingFactory.SportStatusSetting(0x80);
+    let options = {
+      mac: this.data.mac,
+      setting
+    }
+    pushSetting(options);
+  },
+
+  notSport(event) {
+    let setting = new settingFactory.SportStatusSetting(0);
+    let options = {
+      mac: this.data.mac,
+      setting
+    }
+    pushSetting(options);
+  },
+
+  reStartBindDevice(event) {
+    let setting = new settingFactory.LoginBindResp(5);
+    let options = {
+      mac: this.data.mac,
+      setting
+    }
+    pushSetting(options);
   }
-
-
 
 
 });

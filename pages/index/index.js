@@ -6,7 +6,6 @@ import {
   stopScanning,
   addListener,
   removeListener,
-  settingFactory,
   connectStateMsg
 } from '../../DeviceManager'
 
@@ -16,7 +15,7 @@ Page({
     isScanning: false,
     currentItem: 0,
     inputMacString: '6876270C5097',
-    deviceIds: [],
+    macs: [],
     scanResults: [
       {
         name: "demo",
@@ -24,20 +23,46 @@ Page({
         deviceId: "aaaaaaa",
         RSSI: -76,
       },
-    ]
+    ],
+    webviewList: [{
+      title: '步数',
+      type: 'step'
+    }, {
+      title: '睡眠',
+      type: 'sleep'
+    }, {
+      title: '体重',
+      type: 'weight'
+    }, {
+      title: '心率',
+      type: 'heartrate'
+    }, {
+      title: '血压',
+      type: 'bloodpressure'
+    }, {
+      title: '血糖',
+      type: 'bloodsugar'
+    }, {
+      title: '运动记录',
+      type: 'exercise'
+    }, {
+      title: '设置步数',
+      type: 'goal'
+    }]
   },
 
   onLoad() {
     console.log('app', 'onLoad', 'init');
-    init();
-    this.setData({})
+    this.setData({
+      isBluetoothEnable: true
+    })
   },
 
   onShow() {
-    addListener(AdaptorStateEventName, 'index', res => {
+    /** 监听蓝牙连接的事件 */
+    addListener(AdaptorStateEventName, 'bind', res => {
       this.setData({
         isBluetoothEnable: res.available,
-        isScanning: res.discovering,
       })
     });
   },
@@ -57,11 +82,12 @@ Page({
     /** 更新UI */
     this.setData({
       scanResults: [],
-      deviceIds: [],
+      macs: [],
+      isScanning: true
     });
 
     let scanResults = [];
-    let deviceIds = [];
+    let macs = [];
     /** 开始搜索设备 */
     startScanning(res => {
       // let localName = res.localName;
@@ -69,10 +95,10 @@ Page({
       //   return;
       // }
 
-      let index = deviceIds.indexOf(res.deviceId);
+      let index = macs.indexOf(res.mac);
       if (index < 0) {
         scanResults.push(res);
-        deviceIds.push(res.deviceId);
+        macs.push(res.mac);
       } else {
         let obj = scanResults[index];
         if (obj.RSSI < res.RSSI || !obj.RSSI) {
@@ -86,7 +112,7 @@ Page({
       /** 更新UI */
       this.setData({
         scanResults,
-        deviceIds
+        macs
       })
     });
   },
@@ -98,34 +124,6 @@ Page({
     stopScanning();
   },
 
-  inputMacString: function (e) {
-    var value = e.detail.value + ''
-    if (value.length > 12) {
-      value = value.slice(0, 12);
-    }
-
-    var pos = e.detail.cursor
-    // 直接返回对象，可以对输入进行过滤处理，同时可以控制光标的位置
-    return {
-      value: value,
-      cursor: pos
-    }
-  },
-
-  jump: function () {
-    /// 在已知mac 与 model 的情况下
-    let mac = this.data.inputMacString;
-    let name = "GBF-2008-BF1";
-    let model = "GBF-2008-BF1";
-
-    this.jumpToConnect({
-      mac,
-      name,
-      deviceId,
-      model
-    })
-  },
-
   selectDevice: function (event) {
     stopScanning();
     let target = event.target;
@@ -134,15 +132,31 @@ Page({
     this.jumpToBind(device);
   },
 
+
   jumpToBind: function (device) {
     wx.navigateTo({
       url: '../bind/bind?mac=' + device.mac + '&name=' + device.name
     })
   },
 
-  jumpToConnect: function (device) {
+  goMylist: function(event) {
+    console.debug("goMylist");
     wx.navigateTo({
-      url: '../connect/connect?mac=' + device.mac + '&name=' + device.name + '&model=' + device.model
+      url: '../mylist/mylist'
     })
+  },
+
+  goProduct: function(event) {
+    console.debug("goProduct");
+    wx.navigateTo({
+      url: '../product/product'
+    })
+  },
+
+  jumpToDetail: function(event) {
+    let index = parseInt(event.currentTarget.dataset.text);
+    console.debug("detail", index);
   }
+  
+
 })

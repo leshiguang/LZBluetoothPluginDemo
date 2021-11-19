@@ -1,4 +1,18 @@
 <view class='page'>
+
+<view>
+		<!-- <view class="btn" bindtap="goMylist">我的设备列表</view>
+		<view class="btn" bindtap="goProduct">产品列表</view> -->
+		<view class="webview-box">
+			<view class="title">业务数据查看</view>
+			<view class="box">
+				<view class="btn small" wx:for="{{webviewList}}" wx:for-item="item" wx:key="type" data-text="{{index}}" bindtap="jumpToDetail">{{item.title}}</view>
+			</view>
+		</view>
+		<!-- <ls-devtools @refresh="refresh" /> -->
+	</view>
+
+
   <view wx:if='{{isBluetoothEnable}}' class='flex-wrp-row item'>
     <view class='item-left flex-wrp-row'>
       <text>{{statusMsg}}</text>
@@ -10,13 +24,7 @@
       <image class='imageBtn' src='../image/search.svg'></image>
     </view>
   </view>
-   <view style='height:20rpx;  background: white'></view>
-  <view class='flex-wrp-row item'>
-    <input class='mac-input' bindinput="inputMacString" value="{{inputMacString}}" placeholder="请输入12位的macstring"></input>
-    <button size="mini" bindtap="jump">跳转</button>
-  </view>
   <view style='height:20rpx;  background: white'></view>
-
   <scroll-view class="scan-list" scroll-y="true" enable-flex="true">
     <view wx:for="{{scanResults}}" wx:for-item="result" wx:key="unique">
       <view class='list-group' data-text="{{index}}" bindtap="selectDevice">
@@ -39,4 +47,17 @@
       <view style='wight:100%;height:10rpx;  background: white'></view>
     </view>
   </scroll-view>
+
+  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/product/index">
+    <view class="btn">插件产品列表</view>
+  </navigator>
+  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/mylist/index">
+    <view class="btn">插件我的列表</view>
+  </navigator>
+  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/bind/inputsn/index">
+    <view class="btn">插件扫码绑定</view>
+  </navigator>
+  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/bind/snbind/index">
+    <view class="btn">插件sn绑定</view>
+  </navigator>
 </view>

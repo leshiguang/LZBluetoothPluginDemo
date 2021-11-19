@@ -1,0 +1,33 @@
+/* miniprogram/pages/jump/jump.wxss */
+
+.container {
+    background: #FFFFFF;
+    padding: 0 16px;
+    margin: 8px 0;
+  }
+  
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    padding: 16px 0;
+    border-bottom: 0.5PX solid rgba(0,0,0,0.1);
+    font-size: 16px;
+    color: #222222;
+    line-height: 22px;
+  }
+
+  .logText{
+    background: #F5F5F5;
+    height: 900rpx;
+    margin: 10rpx;
+    font-size: 16px;
+  
+  }
+  
+  .text{
+    padding-right: 5rpx;
+    text-overflow:ellipsis;
+    word-break:break-all
+  }

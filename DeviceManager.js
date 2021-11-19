@@ -4,14 +4,13 @@ const plugin = requirePlugin('lzbluetooth-plugin')
 // const plugin = require('./plugin');
 
 export const AdaptorStateEventName = 'adaptorState';        // 蓝牙开关的回调
-export const ConnectionStateEventName = 'connectionState';  // 监听设备的时候设备的回调
+export const ConnectionStateEventName = 'connectionState';  // 监听设备的时候设备的回调   弃用
 export const DataReportEventName = 'dataReport';            // 设备数据的回调
+export const DeviceStateChangedName = 'deviceStateChange';  // 设备的工作状态发生变化的回调
 
 export const BINDSTATE_InputRandomNumber = 0;           // 输入随机数 (A5)
 export const BINDSTATE_Successful = 4;                  // 绑定成功
 export const BINDSTATE_Failure = 5;                     // 绑定失败
-export const BINDSTATE_AuthorizeFailure = 6;            // 鉴权失败
-export const BINDSTATE_InputRandomNumberError = 7;      // 输入随机码错误 (报这个错误是可以继续输入正确的随机码)
 
 export const CONNECTSTATE_None = 0;         //初始状态
 export const CONNECTSTATE_Scan = 1;         //搜索中
@@ -21,6 +20,44 @@ export const CONNECTSTATE_Syncing = 4;      //已经启动数据同步，这是�
 export const CONNECTSTATE_Disconnected = 5; //设备主动断开了连接，或者系统断开了连接
 export const CONNECTSTATE_SyncError = 6;    //发起启动数据同步出现未知异常，和被动设备断开Disconnected区分
 export const CONNECTSTATE_StopDataSync = 7; //业务层主动停止了同步。
+// WorkerBusy = 8,   // 工作繁忙，重复发送指令
+//   NotFound = 9,     // 未找到设备
+//   AuthorizeFailure = 10, // 鉴权失败
+export const CONNECTSTATE_WorkerBusy = 8;
+export const CONNECTSTATE_NotFound = 9;
+export const CONNECTSTATE_AuthorizeFailure = 10;
+
+function privateOnBluetoothDeviceFound(obj) {
+  console.warn("privateOnBluetoothDeviceFound");
+  wx.onBluetoothDeviceFound(res => {
+    console.warn("privateOnBluetoothDeviceFound", res);
+    obj(res);
+  });
+}
+
+function privateOnBLECharacteristicValueChange(obj) {
+  console.warn("privateOnBLECharacteristicValueChange");
+  wx.onBLECharacteristicValueChange(res => {
+    console.warn("privateOnBLECharacteristicValueChange", res);
+    obj(res);
+  })
+}
+
+function privateOnBLEConnectionStateChange(obj) {
+  console.warn("privateOnBLEConnectionStateChange");
+  wx.onBLEConnectionStateChange(res => {
+    console.warn("privateOnBLEConnectionStateChange", res);
+    obj(res);
+  })
+}
+
+function privateOnBluetoothAdapterStateChange(obj) {
+  console.warn("privateOnBluetoothAdapterStateChange");
+  wx.onBluetoothAdapterStateChange(res => {
+    console.warn("privateOnBluetoothAdapterStateChange", res);
+    obj(res);
+  })
+}
 
 /**
  * 初始化
@@ -30,9 +67,12 @@ export function init() {
   console.log('version', version);
 
   plugin.init({
-    appId: "com.leshiguang.saas.rbac.demo.appid",
-    logger: null,
-  });
+    appId: 'com.leshiguang.saas.rbac.demo.appid',
+    onBluetoothDeviceFound: privateOnBluetoothDeviceFound,
+    onBLECharacteristicValueChange: privateOnBLECharacteristicValueChange,
+    onBLEConnectionStateChange: privateOnBLEConnectionStateChange,
+    onBluetoothAdapterStateChange: privateOnBluetoothAdapterStateChange,
+  })
 
   /**
    * AdaptorState = 'adaptorState',//蓝牙状态改变回调
@@ -77,11 +117,28 @@ export function stopScanning() {
  * @param { mac, callback } options 
  */
 export function bindDevice(options) {
-  plugin.bindDevice(options);
+  return plugin.bindDevice(options);
 }
 
+/**
+ * 取消绑定
+ * @param { mac } options 
+ */
 export function cancelBind(options) {
   plugin.cancelBind(options);
+}
+
+/**
+ * 开始ota
+ * @param { mac, fileBuffer, model, onUpgradeProcess, onUpgradeComplete } options 
+ * @returns 
+ */
+export function ota(options) {
+  return plugin.ota(options);
+}
+
+export function cancelOta(options) {
+  return plugin.cancelOta(options);
 }
 
 /**
@@ -92,16 +149,34 @@ export function pushSetting(options) {
   return new Promise((resolve, reject) => {
     plugin.pushSetting(options).then(_ => {
       console.warn('设置成功');
-      wx.showToast({ title: "设置成功", icon: "none", duration: 3000 });
+      wx.showToast({ title: "设置成功", icon: "none", duration: 1000 });
       resolve();
     }).catch(error => {
       console.warn("设置失败", error)
-      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 3000 });
+      wx.showToast({ title: "设置失败，请重试", icon: "none", duration: 1000 });
       reject();
     });
   })
-   
 }
+
+/**
+ * 获取设备的当前状态
+ * @param {mac, settingType} options 
+ */
+export function getSetting(options) {
+  return new Promise((resolve, reject) => {
+    plugin.getSetting(options).then(resp => {
+      console.warn('获取设置项成功', resp);
+      wx.showToast({ title: "获取设置成功", icon: "none", duration: 1000 });
+      resolve(resp);
+    }).catch(error => {
+      console.warn("获取设置失败", error);
+      wx.showToast({ title: "获取设置失败，请重试", icon: "none", duration: 1000 });
+      reject(error);
+    });
+  });
+}
+
 
 /**
  * 添加监听设备 可以是数组
@@ -143,12 +218,20 @@ export function getConnectionState(options) {
   return plugin.getConnectionState(options);
 }
 
+export function getDeviceInfo(mac) {
+  return plugin.getDeviceInfo(mac);
+}
+
 /**
- * 判断蓝牙是否可用
+ * 判断蓝牙是否可用 (这里会有个问题，要初始化之后调用才正确，否则会返回false)
  * @returns boolean 蓝牙是否可用
  */
 export function isBluetoothAvailable() {
   return plugin.isBluetoothAvailable();
+}
+
+export function cancelSetting(mac) {
+  return plugin.cancelSetting(mac);
 }
 
 /**
@@ -207,6 +290,15 @@ export function connectStateMsg(connectState) {
     case CONNECTSTATE_StopDataSync:
       msg = "主动停止同步数据";
       break;
+    case CONNECTSTATE_WorkerBusy:
+      msg = "重复发起";
+      break;
+    case CONNECTSTATE_NotFound:
+      msg = "未发现设备";
+      break;
+    case CONNECTSTATE_AuthorizeFailure:
+      msg = "鉴权失败";
+      break;
   }
   return msg;
 }
@@ -220,29 +312,23 @@ export function bindStateMsg(bindState) {
     case BINDSTATE_Failure:
       statusMsg = "绑定失败";
       break;
-    case BINDSTATE_AuthorizeFailure:
-      statusMsg = "鉴权失败";
-      break;
-    case BINDSTATE_InputRandomNumberError:
-      statusMsg = "输入验证码错误"
-      break;
     case BINDSTATE_Successful:
       statusMsg = "绑定成功";
       break;
   }
 
   return statusMsg;
-} 
+}
 
 // mark test
 function onAdaptorState(available) {
-  console.warn('app', "onAdaptorState", available);
+  // console.warn('app', "onAdaptorState", available);
 }
 
 function onConnectionState(mac, connectState) {
-  console.warn('app', 'onConnectionState', mac, connectState);
+  // console.warn('app', 'onConnectionState', mac, connectState);
 }
 
 function onDataReport(device, dataReport) {
-  console.warn('app', 'onDataReport', device, dataReport);
+  // console.warn('app', 'onDataReport', device, dataReport);
 }

@@ -1,0 +1,42 @@
+<!-- miniprogram/pages/jump/jump.wxml -->
+<view class="container">
+    <view class="item">
+        <view>跳绳模式</view>
+        <picker bindchange="jumpModeSelect" value="{{jumpModeIndex}}" range="{{jumpMode}}">
+            <view class="picker">当前选择：{{jumpMode[jumpModeIndex]}}</view>
+        </picker>
+    </view>
+    <view wx:if="{{jumpModeIndex==0}}" class="item">
+        <view>设置倒计时秒数</view>
+        <picker bindchange="timeCountdownSelect" value="{{settingContentIndex}}" range="{{settingContent}}">
+            <view class="picker">当前选择：{{settingContent[settingContentIndex]}}s</view>
+        </picker>
+    </view>
+    <view wx:if="{{jumpModeIndex==1}}" class="item">
+        <view>设置倒计时次数</view>
+        <picker bindchange="countCountdownSelect" value="{{settingContentIndex}}" range="{{settingContent}}">
+            <view class="picker">当前选择：{{settingContent[settingContentIndex]}}次</view>
+        </picker>
+    </view>
+    <view class="item">
+        <view>倒计时</view>
+        <picker bindchange="countdownSelect" value="{{countdownIndex}}" range="{{countdown}}">
+            <view class="picker">当前选择：{{countdown[countdownIndex]}}s</view>
+        </picker>
+    </view>
+    <view class="item" bindtap="start">
+        <view>开始</view>
+    </view>
+    <view class="item" bindtap="stop">
+        <view>结束</view>
+    </view>
+    <view class="item" bindtap="clearLog">
+        <view>清除日志</view>
+    </view>
+    
+</view>
+<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<scroll-view scroll-y="true" class='logText' enable-flex="true">
+    <span>日志输出:(可以滚动查看)</span>
+    <text selectable="true" class="text">{{logText}}</text>
+</scroll-view>

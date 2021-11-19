@@ -1,0 +1,61 @@
+<!--miniprogram/pages/dial/dial.wxml-->
+<text>miniprogram/pages/dial/dial.wxml</text>
+<view class="container">
+    <view class="item" bindtap="pushPhotoDial">
+        <view>推送相册表盘</view>
+    </view>
+    <view class="item" bindtap="deletePhotoDial">
+        <view>删除相册表盘</view>
+    </view>
+    <view class="item" bindtap="pushYunDial">
+        <view>推送云端表盘1</view>
+    </view>
+    <view class="item" bindtap="deleteYunDial">
+        <view>删除删除表盘1</view>
+    </view>
+    <view class="item" bindtap="pushYunDial2">
+        <view>推送云端表盘2</view>
+    </view>
+    <view class="item" bindtap="deleteYunDial2">
+        <view>删除删除表盘2</view>
+    </view>
+    <view class="item" bindtap="clearLog">
+        <view>清除日志</view>
+    </view>
+
+  <view class="item" bindtap="cancelSetting">
+        <view>取消表盘设置</view>
+    </view>
+    
+</view>
+
+<view class="container">
+
+  <view class="item" bindtap="dialIndexClick1">
+    <view>表盘index1</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick2">
+    <view>表盘index2</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick3">
+    <view>表盘index3</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick4">
+    <view>表盘index4</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick5">
+    <view>表盘index5</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick6">
+    <view>表盘index6</view>
+  </view>
+  <view class="item" bindtap="dialIndexClick7">
+    <view>表盘index7</view>
+  </view>
+</view>
+
+<view style='height:20rpx; background: #F5F5F5; margin-bottom: 5px;'></view>
+<scroll-view scroll-y="true" class='logText' enable-flex="true">
+    <span>日志输出:(可以滚动查看)</span>
+    <text selectable="true" class="text">{{logText}}</text>
+</scroll-view>

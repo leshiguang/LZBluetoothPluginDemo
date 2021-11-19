@@ -5,42 +5,40 @@
   </view>
 </view>
 <view wx:if="{{connectState==4}}" class="container">
-  <view class="item" bindtap="goToOta">
-    <view>设备升级</view>
+  <view class="item" bindtap="gotoOta">
+    <view>设备版本</view>
     <view class="flex-inline">
-      <span class="info">{{ device.softwareVersion }}</span>
+      <span class="info">{{ deviceInfo.firmwareVersion }}</span>
       <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
     </view>
   </view>
-  <view class="item" bindtap="goGuide">
-    <view>操作指南</view>
-    <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
-  </view>
-  <view class="item" bindtap="configWifi">
-    <view>Wi-Fi配置</view>
-    <image mode="widthFix" src="https://files.lifesense.com/other/20200104/65e4ad239f70416f9d80b2463e377c5d.png" alt="" />
-  </view>
   <view class="item">
-    <view>心率开关</view>
-    <switch checked="{{heartRateEnable}}" bindchange="heartRateSwitch" />
-  </view>
-  <view class="item" bindtap="unitSet">
-    <view>单位设置</view>
-    <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
-      <view class="picker">当前选择：{{array[index]}}</view>
-    </picker>
-  </view>
-  <view class="item" bindtap="reset">
-    <view>重置</view>
+    <view>设备型号</view>
+    <view class="flex-inline">
+      <span class="info">{{ deviceInfo.model }}</span>
+    </view>
   </view>
   <view class="item" bindtap="clipSN">
     <view>设备SN号</view>
     <view class="info">{{deviceInfo.sn}}</view>
   </view>
+  <view class="item" bindtap="hasGps">
+    <view>有gps</view>
+  </view>
+  <view class="item" bindtap="notHasGps">
+    <view>没有gps</view>
+  </view>
+  <view class="item" bindtap="notSport">
+    <view>拒绝发起运动</view>
+  </view>
 </view>
+<view wx:if="{{connectState==4}}" class="button" bindtap="startJumpDeviceInfo">设备详情</view>
 <view class="button" bindtap="bindDevice">绑定设备</view>
 <view class="button" bindtap="stopReceiveData">删除设备</view>
 <view class="button" bindtap="restartReceiveData">重新监听</view>
+<view class="button" bindtap="reStartBindDevice">设备重置了，重新绑定</view>
+<view class="button" bindtap="stopReceiveData">设备重置了，删除设备</view>
+
 <!-- 输入验证码 -->
 <view class="code" wx:if="{{bindState === 0 && isBinding === true}}">
   <input placeholder="请输入随机码" maxlength="6" class="input" type="number" focus="{{focus}}" bindinput="bindKeyInput" />
