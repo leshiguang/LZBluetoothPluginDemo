@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "demo",
   "main": "DeviceManager.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/leshiguang/LZBluetoothPluginDemo/issues"
   },
-  "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme"
+  "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
+  "dependencies": {
+    "sg-ble-next": "^1.0.0"
+  }
 }

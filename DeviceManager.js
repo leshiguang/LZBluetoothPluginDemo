@@ -1,4 +1,4 @@
-const plugin = requirePlugin('lzbluetooth-plugin')
+const plugin  = require("sg-ble-next");
 
 // import plugin from 'plugin'
 // const plugin = require('./plugin');
