@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
   "dependencies": {
-    "sg-ble-next": "^1.0.0"
+    "sg-ble-next": "^1.0.1"
   }
 }

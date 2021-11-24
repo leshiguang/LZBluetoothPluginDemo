@@ -59,6 +59,18 @@ function privateOnBluetoothAdapterStateChange(obj) {
   })
 }
 
+function privateStartBluetoothDevicesDiscovery(obj) {
+  let unikey = obj.unikey;
+  console.warn("privateStartBluetoothDevicesDiscovery", unikey);
+  wx.startBluetoothDevicesDiscovery(obj);
+}
+
+function privateStopBluetoothDevicesDiscovery(obj) {
+  let unikey = obj.unikey;
+  console.warn("privateStopBluetoothDevicesDiscovery", unikey);
+  wx.stopBluetoothDevicesDiscovery(obj);
+}
+
 /**
  * 初始化
  */
@@ -72,6 +84,9 @@ export function init() {
     onBLECharacteristicValueChange: privateOnBLECharacteristicValueChange,
     onBLEConnectionStateChange: privateOnBLEConnectionStateChange,
     onBluetoothAdapterStateChange: privateOnBluetoothAdapterStateChange,
+
+    // stopBluetoothDevicesDiscovery: privateStopBluetoothDevicesDiscovery,
+    // startBluetoothDevicesDiscovery: privateStartBluetoothDevicesDiscovery,
   })
 
   /**
