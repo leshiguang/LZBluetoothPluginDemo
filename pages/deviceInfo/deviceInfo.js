@@ -71,6 +71,13 @@ if (typeof SettingType == "undefined") {
 
     SyncTime: 34,     // 同步时间
 
+    SyncData: 35,   // 同步数据
+
+    SyncAllData: 36,  // 同步所有数据
+
+    RealtimeHROpen: 40, // 实时心率开
+    RealtimeHRClose: 41, // 实时心率关
+
 
     // 跳神
     BeginJump: 0x10001,     // 开始跳绳
@@ -80,9 +87,16 @@ if (typeof SettingType == "undefined") {
     ScaleUint: 0x20002,      // 体脂秤的单位设置
     ScaleConfigWifi: 0x20003, // 蓝牙配置wifi
     ScaleReset: 0x20004,      // 体脂秤的重置
+    ScaleWifiReset: 0x20005,  // wifi重置
+    ScaleWifiStatus: 0x20006, // 获取当前wifi配置
+
+    McuTime: 0x080001,
+    McuSynData: 0x080002,
 
     // common
     Ota: 0xf0001,            // Ota
+
+    DrinkEventReminder: 0x30005//喝水提醒
   }
 }
 
@@ -122,7 +136,7 @@ Page({
     let settings = null;
     if (device.model.indexOf("456") >= 0) {
       settings = this.m6DeviceSettings();
-    } else if (device.model.indexOf("460") >= 0) {
+    } else if (device.model.indexOf("460") >= 0 || device.model.indexOf("437") >= 0) {
       settings = this.bigWatchSettings();
     } else if (device.name.indexOf("JC") >= 0) {
       settings = this.mioSettings();
@@ -130,9 +144,10 @@ Page({
       settings = this.scaleSettings();
     } else if (device.model.indexOf("LS818") >= 0) {
       settings = this.bpSettings();
-    }
-    else {
-      settings = [];
+    } else if (device.model.indexOf('PB1') >= 0) {
+      settings = this.mcuSettings();
+    } else if (device.model.indexOf('431') >= 0) {
+      settings = this.a5DeviceSettings();
     }
     this.setData({
       mac: obj.mac,
@@ -205,9 +220,9 @@ Page({
           isDelete: false,
           napAlertTime: 15,
           lightSleepAlertTime: 15,
-          hour: 19,
-          minute: 50,
-          repeatTime: 1,
+          hour: 16,
+          minute: 10,
+          repeatTime: 0b1111111,
           vibrationType: 2,
           vibrationTime: 3,
           vibrationLevel1: 4,
@@ -227,7 +242,7 @@ Page({
         break;
       }
       case SettingType.TimeFormat:
-        settingInfo = new settingFactory.TimeFormatSetting(0x01);
+        settingInfo = new settingFactory.TimeFormatSetting(0x00);
         break;
       case SettingType.NightMode:
         let nightMode = {
@@ -254,7 +269,7 @@ Page({
         });
         return;
       case SettingType.CustomScreen:
-        settingInfo = new settingFactory.CustomPagesSetting([13, 0, 255, 2, 1, 7, 16]);
+        settingInfo = new settingFactory.CustomPagesSetting([13]);
         break
       case SettingType.RighteSwipeDisplay:
         let value = {
@@ -281,10 +296,10 @@ Page({
         });
         return;
       case SettingType.ScaleEnableHr:
-
+        settingInfo = new settingFactory.A6HeartRateSetting(true);
         break;
       case SettingType.ScaleUint:
-
+        settingInfo = new settingFactory.A6UnitSetting(1);
         break;
       case SettingType.ScaleConfigWifi:
         wx.navigateTo({
@@ -300,12 +315,12 @@ Page({
         })
         return;
       case SettingType.Target:
-        settingInfo = new settingFactory.EncourageTargetSetting(true, 6, 10);
+        settingInfo = new settingFactory.EncourageTargetSetting(true, 1, 3000);
         break;
       case SettingType.MsgRemind:
 
         let qq = {
-          reminderType: 2,
+          reminderType: 0xfd,
           enable: true,
         }
         settingInfo = new settingFactory.MultipleSetting([{ tag: 0x21, list: [qq] }]);
@@ -361,7 +376,12 @@ Page({
         settingInfo = new settingFactory.MultipleSetting([value])
         break;
       case SettingType.Weather:
-        // settingInfo = new settingFactory
+        settingInfo = new settingFactory.WeatherSetting(1634195542, [{
+          weatherCode: 0x00,
+          aqi: 1,
+          minTemperature: 10,
+          maxTemperature: 12
+        }]);
         break;
       case SettingType.SedentaryRemind2:
         let info = {
@@ -409,7 +429,7 @@ Page({
           noDisturbEndHour: 16,
           noDisturbEndMinute: 3,
         }
-        settingInfo = new settingFactory.ReminderSetting([info], 4, true);
+        settingInfo = new settingFactory.ReminderSetting([info], 1, true);
         break;
       case SettingType.SleepRemind2: {
 
@@ -486,9 +506,15 @@ Page({
         settingInfo = new settingFactory.CallNotifySetting("13265792174", 2);
         break;
       case SettingType.MusiceInfo:
-        settingInfo = new settingFactory.MusicInfoSetting({ volLevel: 90, playStatus: 3, playTime: 10, duration: 100, musicName: "杀手修炼手册", author: "Ice Paper", album: "杀手修炼手册", maxVol: 32 })
+        settingInfo = new settingFactory.MusicInfoSetting({ volLevel: 90, playStatus: 3, playTime: 10, duration: 100, musicName: "Honey I Love you", author: "Ice Paper", album: "杀手修炼手册", maxVol: 32 })
         break;
       case SettingType.NewWeather: {
+        settingInfo = new settingFactory.NewWeatherSetting(1634195542, [{
+          weatherCode: 0x00,
+          aqi: 1,
+          minTemperature: 10,
+          maxTemperature: 12
+        }]);
 
         break;
       }
@@ -501,7 +527,84 @@ Page({
         settingInfo = new settingFactory.MultipleSetting([value])
         break;
       }
+      case SettingType.SyncData: {
+        settingInfo = new settingFactory.SyncReqSetting(0xfe);
+        break;
+      }
+      case SettingType.SyncAllData: {
+        settingInfo = new settingFactory.SyncReqSetting(0xff);
+        break;
+      }
+      case SettingType.DrinkEventReminder:
+
+        let a = {
+          index: 1,
+
+          // 开关
+          enable: true,
+
+          // 提醒开始时间
+          startHour: 8,
+          startMinute: 8,
+
+          // 提醒结束时间
+          endHour: 20,
+          endMinute: 20,
+
+          // 0x00：定时 0x01：周期
+          reminderMode: 1,
+
+
+          // 周期 每间隔多少分钟提醒一次
+          frequency: 5,
+
+          // 参考 RepeatTime
+          repeatTime: 127,
+          // 参考 VibrationType
+          vibrationType: 0,
+          // 表示提醒持续总时长，最大值60s
+          vibrationTime: 60,
+          // 共分10 级。0~9
+          vibrationLevel1: 9,
+          // 共分10 级。0~9当震动方式为持续震动时，该字段无效，但需留位
+          vibrationLevel2: 9,
+
+          // 勿扰开关 
+          noDisturbEnable: true,
+
+          // 勿扰开始时间
+          noDisturbStartHour: 19,
+          noDisturbStartMinute: 0,
+
+          // 勿扰结束时间
+          noDisturbEndHour: 20,
+          noDisturbEndMinute: 0,
+        }
+        settingInfo = new settingFactory.ReminderSetting([a], 3, true);
+        break;
+      case SettingType.McuSynData: {
+        settingInfo = new settingFactory.SyncBoxData();
+        break;
+      }
+      case SettingType.ScaleWifiReset: {
+        settingInfo = new settingFactory.WifiResetReq();
+        break;
+      }
+      case SettingType.ScaleWifiStatus: {
+        settingInfo = new settingFactory.WifiStatusReq();
+        break;
+      }
+      case SettingType.RealtimeHROpen: {
+        settingInfo = new settingFactory.RealtimeHRSetting(true);
+        break;
+      }
+      case SettingType.RealtimeHRClose: {
+        settingInfo = new settingFactory.RealtimeHRSetting(false);
+        break
+      }
     }
+
+
     if (settingInfo) {
       pushSetting({
         mac: this.data.mac,
@@ -509,6 +612,7 @@ Page({
       })
     } else {
       wx.showToast({ title: "设置未实现", icon: "none", duration: 3000 });
+
     }
   },
 
@@ -571,13 +675,17 @@ Page({
         settingType = 16;
         break;
       case SettingType.Weather:
-        // settingType = 17;
-        console.warn("天气不支持");
+        settingType = 0xff;
         break;
       case SettingType.HeartRateSwitch:
         settingType = 18;
         break;
-
+      case SettingType.SyncData:
+        settingType = 0xff;
+        break;
+      case SettingType.DrinkEventReminder:
+        settingType = 19;
+        break;
     }
 
     getSetting({
@@ -604,11 +712,24 @@ Page({
       { name: this.name(SettingType.RighteSwipeDisplay), settingType: SettingType.RighteSwipeDisplay, value: "右滑显示按钮" },
 
       { name: this.name(SettingType.Target), settingType: SettingType.Target, value: "" },
+      { name: this.name(SettingType.SyncData), settingType: SettingType.SyncData, value: "" },
+
     ]
   },
 
-  a5DeviceSetting() {
+  a5DeviceSettings() {
+    return [
+      { name: this.name(SettingType.HeartRateWarning), settingType: SettingType.HeartRateWarning, value: "心率检测" },
+      { name: this.name(SettingType.SedentaryRemind), settingType: SettingType.SedentaryRemind, value: "久坐提醒" },
+      { name: this.name(SettingType.EventRemind), settingType: SettingType.EventRemind, value: "闹钟提醒" },
+      { name: this.name(SettingType.TimeFormat), settingType: SettingType.TimeFormat, value: "24小时制" },
+      { name: this.name(SettingType.CustomScreen), settingType: SettingType.CustomScreen, value: "自定义屏幕" },
+      { name: this.name(SettingType.NightMode), settingType: SettingType.NightMode, value: "夜间模式" },
+      { name: this.name(SettingType.Target), settingType: SettingType.Target, value: "" },
+      { name: this.name(SettingType.RealtimeHROpen), settingType: SettingType.RealtimeHROpen, value: "" },
+      { name: this.name(SettingType.RealtimeHRClose), settingType: SettingType.RealtimeHRClose, value: "" },
 
+    ]
   },
 
   bigWatchSettings() {
@@ -641,6 +762,12 @@ Page({
       { name: this.name(SettingType.NewWeather), settingType: SettingType.NewWeather, value: "" },
       { name: this.name(SettingType.CallRemove), settingType: SettingType.CallRemove, value: "" },
       { name: this.name(SettingType.SyncTime), settingType: SettingType.SyncTime, value: "" },
+      { name: this.name(SettingType.SyncData), settingType: SettingType.SyncData, value: "" },
+      { name: this.name(SettingType.SyncAllData), settingType: SettingType.SyncAllData, value: "" },
+      { name: this.name(SettingType.DrinkEventReminder), settingType: SettingType.DrinkEventReminder, value: "" },
+      { name: this.name(SettingType.RighteSwipeDisplay), settingType: SettingType.RighteSwipeDisplay, value: "右滑显示按钮" },
+
+
     ]
   },
 
@@ -650,6 +777,8 @@ Page({
       { name: this.name(SettingType.ScaleUint), settingType: SettingType.ScaleUint, value: "单位设置" },
       { name: this.name(SettingType.ScaleConfigWifi), settingType: SettingType.ScaleConfigWifi, value: "配置wifi" },
       { name: this.name(SettingType.ScaleReset), settingType: SettingType.ScaleReset, value: "重置" },
+      { name: this.name(SettingType.ScaleWifiReset), settingType: SettingType.ScaleWifiReset, value: "" },
+      { name: this.name(SettingType.ScaleWifiStatus), settingType: SettingType.ScaleWifiStatus, value: "" },
       { name: this.name(SettingType.Ota), settingType: SettingType.Ota, value: this.data.device.firmwareVersion },
     ]
   },
@@ -661,6 +790,13 @@ Page({
   mioSettings() {
     return [
       { name: this.name(SettingType.BeginJump), settingType: SettingType.BeginJump, value: "跳绳" },
+    ]
+  },
+
+  mcuSettings() {
+    return [
+      { name: this.name(SettingType.McuSynData), settingType: SettingType.McuSynData, value: "" },
+      { name: this.name(SettingType.McuTime), settingType: SettingType.McuTime, value: "" },
     ]
   },
 
@@ -744,6 +880,24 @@ Page({
         return "清除电话状态";
       case SettingType.SyncTime:
         return "同步时间";
+      case SettingType.SyncData:
+        return "同步数据";
+      case SettingType.SyncAllData:
+        return "同步所有数据";
+      case SettingType.DrinkEventReminder:
+        return "喝水提醒";
+      case SettingType.McuSynData:
+        return "同步数据"
+      case SettingType.McuTime:
+        return "设置时间"
+      case SettingType.ScaleWifiReset:
+        return "wifi重置"
+      case SettingType.ScaleWifiStatus:
+        return "获取wifi配置状态"
+      case SettingType.RealtimeHROpen:
+        return "实时心率开"
+      case SettingType.RealtimeHRClose:
+        return "实时心率关"
     }
   }
 })

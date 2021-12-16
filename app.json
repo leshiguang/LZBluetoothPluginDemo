@@ -7,7 +7,7 @@
   ],
   "plugins": {
     "lzbluetooth-plugin": {
-      "version": "1.0.12",
+      "version": "1.0.14",
       "provider": "wxe3d2a6ab8dd5b49b"
     }
   },
