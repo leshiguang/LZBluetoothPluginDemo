@@ -1,22 +1,27 @@
 {
-  "name": "lsplugin",
-  "version": "1.0.0",
-  "description": "demo",
-  "main": "DeviceManager.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/leshiguang/LZBluetoothPluginDemo.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/leshiguang/LZBluetoothPluginDemo/issues"
-  },
-  "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
-  "dependencies": {
-    "sg-ble-next": "^1.0.1"
-  }
+    "name": "lsplugin",
+    "version": "1.0.0",
+    "description": "demo",
+    "main": "DeviceManager.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/leshiguang/LZBluetoothPluginDemo.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/leshiguang/LZBluetoothPluginDemo/issues"
+    },
+    "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
+    "dependencies": {
+        "sg-ble": "file:../ls-ble",
+        "sg-bloodpressure": "file:../sg-bloodpressure",
+        "sg-box": "file:../sg-box",
+        "sg-bracelet": "file:../sg-bracelet",
+        "sg-scale": "file:../sg-scale",
+        "sg-skip": "file:../sg-skip"
+    }
 }
