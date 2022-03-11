@@ -4,12 +4,14 @@ const bloodpressure = require("sg-bloodpressure");
 const skip = require("sg-skip");
 const box = require('sg-box');
 const bracelet = require('sg-bracelet');
+const dumbbell = require('sg-dumbbell');
 
-// plugin.regist(scale.proto);
-// plugin.regist(bloodpressure.proto);
-// plugin.regist(skip.proto);
-// plugin.regist(box.proto);
-// plugin.regist(bracelet.proto);
+plugin.regist(scale.proto);
+plugin.regist(bloodpressure.proto);
+plugin.regist(skip.proto);
+plugin.regist(box.proto);
+plugin.regist(bracelet.proto);
+plugin.regist(dumbbell.proto);
 
 /** 获取setting对象 */
 export const settingFactory = {
