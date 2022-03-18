@@ -51,29 +51,33 @@ Page({
 
     onLoad() {
         console.log('app', 'onLoad', 'init');
-        this.setData({
-            isBluetoothEnable: true
-        })
-    },
 
-    onShow() {
         /** 监听蓝牙连接的事件 */
         addListener(AdaptorStateEventName, 'bind', res => {
             this.setData({
                 isBluetoothEnable: res.available,
             })
         });
+
+        this.setData({
+            isBluetoothEnable: true
+        })
+        
+    },
+
+    onShow() {
+        
     },
 
     onHide() {
-        removeListener(AdaptorStateEventName, 'index');
+
     },
 
     onReady() {
-        let isBluetoothEnable = isBluetoothAvailable();
-        this.setData({
-            isBluetoothEnable
-        });
+        // let isBluetoothEnable = isBluetoothAvailable();
+        // this.setData({
+        //     isBluetoothEnable
+        // });
     },
 
     startSearch() {

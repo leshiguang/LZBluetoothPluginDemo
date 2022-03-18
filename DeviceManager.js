@@ -6,12 +6,12 @@ const box = require('sg-box');
 const bracelet = require('sg-bracelet');
 const dumbbell = require('sg-dumbbell');
 
-plugin.regist(scale.proto);
-plugin.regist(bloodpressure.proto);
-plugin.regist(skip.proto);
-plugin.regist(box.proto);
-plugin.regist(bracelet.proto);
-plugin.regist(dumbbell.proto);
+plugin.regist(scale);
+plugin.regist(bloodpressure);
+plugin.regist(skip);
+plugin.regist(box);
+plugin.regist(bracelet);
+plugin.regist(dumbbell);
 
 /** 获取setting对象 */
 export const settingFactory = {
@@ -23,7 +23,7 @@ export const settingFactory = {
 }
 
 console.debug("体脂秤协议", scale.proto);
-console.debug("一些类", scale.scale);
+console.debug("一些类", scale.settingFactory);
 
 console.info("=========================================")
 
@@ -108,6 +108,7 @@ export function init() {
 
     plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
+        debug: true
     })
 
     /**
