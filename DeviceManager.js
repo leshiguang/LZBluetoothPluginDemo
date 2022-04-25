@@ -109,6 +109,10 @@ export function init() {
     plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
         debug: true
+    }).then(res => {
+        console.debug("初始化成功 ", res);
+    }).catch(err => {
+        console.error("初始化失败", err);
     })
 
     /**

@@ -17,7 +17,7 @@
     },
     "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
     "dependencies": {
-        "sg-ble": "^2.0.4",
+        "sg-ble": "^2.0.9",
         "sg-bloodpressure": "^1.0.1",
         "sg-box": "^1.0.1",
         "sg-bracelet": "^1.0.1",
