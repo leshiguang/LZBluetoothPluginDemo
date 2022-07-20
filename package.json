@@ -17,12 +17,12 @@
     },
     "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
     "dependencies": {
-        "sg-ble": "^2.0.9",
-        "sg-bloodpressure": "^1.0.1",
-        "sg-box": "^1.0.1",
-        "sg-bracelet": "^1.0.1",
-        "sg-dumbbell": "^1.0.1",
-        "sg-scale": "^1.0.1",
-        "sg-skip": "^1.0.1"
+        "sg-ble": "^2.0.14",
+        "sg-bloodpressure": "^1.0.2",
+        "sg-box": "^1.0.6",
+        "sg-bracelet": "^1.0.9",
+        "sg-dumbbell": "^1.0.2",
+        "sg-scale": "^1.0.2",
+        "sg-skip": "^1.0.2"
     }
 }
