@@ -5,6 +5,7 @@ const skip = require("sg-skip");
 const box = require('sg-box');
 const bracelet = require('sg-bracelet');
 const dumbbell = require('sg-dumbbell');
+const cavo = require('sg-cavosmart');
 
 plugin.regist(scale);
 plugin.regist(bloodpressure);
@@ -12,6 +13,7 @@ plugin.regist(skip);
 plugin.regist(box);
 plugin.regist(bracelet);
 plugin.regist(dumbbell);
+plugin.regist(cavo);
 
 /** 获取setting对象 */
 export const settingFactory = {
@@ -19,7 +21,8 @@ export const settingFactory = {
     ...bloodpressure.settingFactory,
     ...skip.settingFactory,
     ...box.settingFactory,
-    ...bracelet.settingFactory
+    ...bracelet.settingFactory,
+    ...cavo.settingFactory,
 }
 
 console.debug("体脂秤协议", scale.proto);
