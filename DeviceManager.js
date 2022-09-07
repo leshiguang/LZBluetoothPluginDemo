@@ -26,7 +26,7 @@ export const settingFactory = {
 }
 
 console.debug("体脂秤协议", scale.proto);
-console.debug("一些类", scale.settingFactory);
+console.debug("一些类", cavo.settingFactory);
 
 console.info("=========================================")
 

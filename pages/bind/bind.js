@@ -252,8 +252,9 @@ Page({
   },
 
   startJumpDeviceInfo(event) {
+    console.warn('startJumpDeviceInfo', this.data.mac, this.data.name, this.data.model);
       wx.navigateTo({
-          url: '../deviceInfo/deviceInfo?mac=' + this.data.mac + '&name=' + this.data.name + '&model=' + this.data.model
+          url: '../deviceInfo/deviceInfo?mac=' + this.data.mac
       })
   },
 

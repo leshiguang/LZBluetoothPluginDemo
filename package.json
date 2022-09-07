@@ -21,7 +21,7 @@
         "sg-bloodpressure": "^1.1.2",
         "sg-box": "^1.1.2",
         "sg-bracelet": "^1.1.2",
-        "sg-cavosmart": "^1.0.0",
+        "sg-cavosmart": "^1.0.3",
         "sg-dumbbell": "^1.1.2",
         "sg-scale": "^1.1.3",
         "sg-skip": "^1.1.2"

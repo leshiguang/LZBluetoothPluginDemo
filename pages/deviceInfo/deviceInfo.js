@@ -91,12 +91,12 @@ const SettingType = {
     CVBloodPressureSwitch: 0x4002,
     CVBloodPressureDisplaySwitch: 0x4003,
     CVTimeFormat: 4005,
-    CVHeartRateSwitch,
     CVLongSit: 4006,
     CVClock: 4007,
     CVSyncHistoryDataReq: 4008,
     CVTemperatureSwitch: 4009,
     CVTemperatureDisplaySwitch: 4010,
+    CVHeartRateSwitch: 4011,
 
     // 跳神
     BeginJump: 0x10001, // 开始跳绳
@@ -120,8 +120,6 @@ const SettingType = {
     Ota: 0xf0001, // Ota
 
     DrinkEventReminder: 0x30005, // 喝水提醒
-    BloodPressureDisplaySwitch: 22,
-    TemperatureDisplaySwitch: 23,
 };
 
 Page({
@@ -188,12 +186,52 @@ Page({
         console.debug('xxxxxxxxxxxx', event, setting);
         let settingInfo = null;
         switch (setting.settingType) {
-            case SettingType.BloodPressureDisplaySwitch:
+
+            case SettingType.CVEncourage:
                 settingInfo = new settingFactory.Encourage(1, 17000);
                 break;
-            case SettingType.TemperatureDisplaySwitch:
-                settingInfo = new settingFactory.TemperatureDisplaySwitch(true, false);
+            case SettingType.CVBloodPressureDisplaySwitch:
+                settingInfo = new settingFactory.BloodPressureDisplaySwitch(true);
                 break;
+            case SettingType.CVTemperatureDisplaySwitch:
+                settingInfo = new settingFactory.TemperatureDisplaySwitch(true);
+                break;
+            case SettingType.CVTimeFormat:
+                settingInfo = new settingFactory.TimeFormat(0);
+                break;
+            case SettingType.CVHeartRateSwitch:
+                settingInfo = new settingFactory.HeartRateSwitch(true);
+                break;
+            case SettingType.CVLongSit:
+                settingInfo = new settingFactory.LongSit();
+                break;
+            case SettingType.CVClock:
+                let clock = {
+
+                    index: 1,
+
+                    /**
+                      * 提醒时间的小时
+                      */
+                    hour: 8,
+
+                    /**
+                      * 提醒时间的分钟
+                      */
+                    minute: 9,
+
+                    /**
+                      * 提醒重复时间
+                      */
+                    repeatTime: 127,
+
+                }
+                settingInfo = new settingFactory.Clock([clock]);
+                break;
+            case SettingType.CVSyncHistoryDataReq:
+                settingInfo = new settingFactory.SyncHistoryDataReq();
+                break;
+
             case SettingType.HeartRateWarning:
             case SettingType.SportHrWarniing:
                 const generalHr = {
@@ -721,12 +759,25 @@ Page({
         const setting = event.target.dataset.result;
         let settingType = 0;
         switch (setting.settingType) {
-            case SettingType.BloodPressureDisplaySwitch:
+            case SettingType.CVBloodPressureDisplaySwitch:
                 settingType = 22;
                 break;
-            case SettingType.TemperatureDisplaySwitch:
+            case SettingType.CVTemperatureDisplaySwitch:
                 settingType = 23;
                 break;
+            case SettingType.CVTimeFormat:
+                settingType = 5;
+                break;
+            case SettingType.CVHeartRateSwitch:
+                settingType = 18;
+                break;
+            case SettingType.CVLongSit:
+                settingType = 2;
+                break;
+            case SettingType.CVClock:
+                settingType = 4;
+                break;
+
             case SettingType.HeartRateWarning:
                 settingType = 0;
                 break;
@@ -796,6 +847,7 @@ Page({
                 break;
         }
 
+        console.debug('getSettingType', settingType);
         getSetting({
             mac: this.data.mac,
             settingType,
@@ -828,12 +880,14 @@ Page({
     },
     cavoDeviceSettings() {
         return [
-            { name: this.name(SettingType.HeartRateSwitch), settingType: SettingType.HeartRateSwitch, value: '心率开关' },
-            { name: this.name(SettingType.SedentaryRemind), settingType: SettingType.SedentaryRemind, value: '久坐提醒' },
-            { name: this.name(SettingType.EventRemind), settingType: SettingType.EventRemind, value: '闹钟' },
-            { name: this.name(SettingType.TimeFormat), settingType: SettingType.TimeFormat, value: '时间制式' },
-            { name: this.name(SettingType.BloodPressureDisplaySwitch), settingType: SettingType.BloodPressureDisplaySwitch, value: '血压监测' },
-            { name: this.name(SettingType.TemperatureDisplaySwitch), settingType: SettingType.TemperatureDisplaySwitch, value: '体温测量' },
+            { name: this.name(SettingType.CVEncourage), settingType: SettingType.CVEncourage, value: "" },
+            { name: this.name(SettingType.CVBloodPressureDisplaySwitch), settingType: SettingType.CVBloodPressureDisplaySwitch, value: "" },
+            { name: this.name(SettingType.CVTimeFormat), settingType: SettingType.CVTimeFormat, value: "" },
+            { name: this.name(SettingType.CVHeartRateSwitch), settingType: SettingType.CVHeartRateSwitch, value: "" },
+            { name: this.name(SettingType.CVLongSit), settingType: SettingType.CVLongSit, value: "" },
+            { name: this.name(SettingType.CVClock), settingType: SettingType.CVClock, value: "" },
+            { name: this.name(SettingType.CVTemperatureDisplaySwitch), settingType: SettingType.CVTemperatureDisplaySwitch, value: "" },
+            { name: this.name(SettingType.CVSyncHistoryDataReq), settingType: SettingType.CVSyncHistoryDataReq, value: "" },
         ];
     },
     a5DeviceSettings() {
@@ -932,10 +986,6 @@ Page({
 
     name(settingType) {
         switch (settingType) {
-            case SettingType.TemperatureDisplaySwitch:
-                return '体温监测';
-            case SettingType.BloodPressureDisplaySwitch:
-                return '血压监测';
             case SettingType.HeartRateWarning:
                 return '心率检测';
             case SettingType.SleepOximetry:
@@ -1040,20 +1090,28 @@ Page({
                 return '中文';
             case SettingType.PushMsgSwitch:
                 return '开启推送';
-                case SettingType.CVEncourage: 
-                return 'cv手环鼓励'
-                case SettingType.CVBloodPressureSwitch:
+            case SettingType.CVEncourage:
+                return 'cv手环鼓励';
+            case SettingType.CVBloodPressureSwitch:
+                return 'cv血压开关';
+            case SettingType.CVBloodPressureDisplaySwitch:
+                return 'cv血压显示开关';
+            case SettingType.CVTimeFormat:
+                return 'cv24小时制';
+            case SettingType.CVHeartRateSwitch:
+                return 'cv心率开关'
+            case SettingType.CVLongSit:
+                return 'cv久坐提醒'
+            case SettingType.CVClock:
+                return 'cv闹钟'
+            case SettingType.CVTemperatureSwitch:
+                return 'cv温度'
+            case SettingType.CVTemperatureDisplaySwitch:
+                return 'cv温度显示'
+            case SettingType.CVSyncHistoryDataReq:
+                return 'cv同步数据'
             default:
-                // CVEncourage: 0x4001,
-                // CVBloodPressureSwitch: 0x4002,
-                // CVBloodPressureDisplaySwitch: 0x4003,
-                // CVTimeFormat: 4005,
-                // CVHeartRateSwitch,
-                // CVLongSit: 4006,
-                // CVClock: 4007,
-                // CVSyncHistoryDataReq: 4008,
-                // CVTemperatureSwitch: 4009,
-                // CVTemperatureDisplaySwitch: 4010,
+
         }
         return '';
     },
