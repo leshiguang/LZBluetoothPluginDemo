@@ -119,6 +119,17 @@ export function init() {
     })
 
     /**
+     * 设置用户信息，手环计算卡路里有关
+     */
+    plugin.updateUserInfo({
+        gender: 1,
+        weight: 59,
+        height: 1.76,
+        age: 24,
+    
+      });
+
+    /**
      * AdaptorState = 'adaptorState',//蓝牙状态改变回调
      * ConnectionState = 'connectionState',//连接状态改变回调
      * DataReport = 'dataReport', // 数据接收回调
