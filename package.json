@@ -20,7 +20,7 @@
         "sg-ble": "^2.1.9",
         "sg-bloodpressure": "^1.1.3",
         "sg-box": "^1.1.3",
-        "sg-bracelet": "^1.1.5",
+        "sg-bracelet": "^1.1.6",
         "sg-cavosmart": "^1.0.5",
         "sg-dumbbell": "^1.1.3",
         "sg-scale": "^1.1.4",
