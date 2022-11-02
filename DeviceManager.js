@@ -6,6 +6,7 @@ const box = require('sg-box');
 const bracelet = require('sg-bracelet');
 const dumbbell = require('sg-dumbbell');
 const cavo = require('sg-cavosmart');
+const glucose = require('sg-glucose');
 
 plugin.regist(scale);
 plugin.regist(bloodpressure);
@@ -14,6 +15,7 @@ plugin.regist(box);
 plugin.regist(bracelet);
 plugin.regist(dumbbell);
 plugin.regist(cavo);
+plugin.regist(glucose);
 
 /** 获取setting对象 */
 export const settingFactory = {
@@ -23,6 +25,7 @@ export const settingFactory = {
     ...box.settingFactory,
     ...bracelet.settingFactory,
     ...cavo.settingFactory,
+    ...glucose.settingFactory,
 }
 
 console.debug("体脂秤协议", scale.proto);

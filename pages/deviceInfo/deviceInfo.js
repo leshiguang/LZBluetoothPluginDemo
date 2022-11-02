@@ -116,6 +116,10 @@ const SettingType = {
     // 哑铃
     MoveData: 0x090001,
 
+    // 血糖
+    GlucoseData: 0x0a0001,
+    GlucoseNData: 0x0a0002,
+
     // common
     Ota: 0xf0001, // Ota
 
@@ -171,6 +175,8 @@ Page({
             settings = this.moveitSettings();
         } else if (device.model.indexOf('432') >= 0) {
             settings = this.cavoDeviceSettings();
+        } else if (device.model.indexOf('G3') >= 0) {
+            settings = this.glucoseSettings();
         }
         this.setData({
             mac: obj.mac,
@@ -740,6 +746,14 @@ Page({
                 settingInfo = new settingFactory.HeartRateDetectSetting(opened);
                 break;
             }
+            case SettingType.GlucoseData: {
+                settingInfo = new settingFactory.ReadHistoryData();
+                break;
+            }
+            case SettingType.GlucoseNData: {
+                settingInfo = new settingFactory.ReadHistoryData(1);
+                break;
+            }
             default:
                 break;
         }
@@ -984,6 +998,13 @@ Page({
         ];
     },
 
+    glucoseSettings() {
+        return [
+            { name: this.name(SettingType.GlucoseData), settingType: SettingType.GlucoseData, value: '' },
+            { name: this.name(SettingType.GlucoseNData), settingType: SettingType.GlucoseNData, value: '' },
+        ];
+    },
+
     name(settingType) {
         switch (settingType) {
             case SettingType.HeartRateWarning:
@@ -1110,6 +1131,10 @@ Page({
                 return 'cv温度显示'
             case SettingType.CVSyncHistoryDataReq:
                 return 'cv同步数据'
+            case SettingType.GlucoseData:
+                return '血糖数据';
+            case SettingType.GlucoseNData:
+                return '读取n条数据';
             default:
 
         }
