@@ -6,7 +6,7 @@ import {
     stopScanning,
     addListener,
     removeListener,
-    connectStateMsg
+    connectStateMsg,
 } from '../../DeviceManager'
 
 Page({
@@ -52,16 +52,7 @@ Page({
     onLoad() {
         console.log('app', 'onLoad', 'init');
 
-        /** 监听蓝牙连接的事件 */
-        addListener(AdaptorStateEventName, 'bind', res => {
-            this.setData({
-                isBluetoothEnable: res.available,
-            })
-        });
-
-        this.setData({
-            isBluetoothEnable: true
-        })
+        
         
     },
 
@@ -78,6 +69,21 @@ Page({
         // this.setData({
         //     isBluetoothEnable
         // });
+    },
+
+    init() {
+        /** 监听蓝牙连接的事件 */
+        init().then(_ => {
+            console.info('初始化完成');
+            this.setData({
+                isBluetoothEnable: true
+            })
+        }).catch(error => {
+            console.error('初始化报错', error);
+            this.setData({
+                isBluetoothEnable: false
+            })
+        })
     },
 
     startSearch() {

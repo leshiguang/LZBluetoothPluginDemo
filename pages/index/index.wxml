@@ -8,7 +8,7 @@
 			</view>
 		</view>
 	</view> -->
-
+  <button bindtap="init">延迟初始化</button>
 
   <view wx:if='{{isBluetoothEnable}}' class='flex-wrp-row item'>
     <view class='item-left flex-wrp-row'>

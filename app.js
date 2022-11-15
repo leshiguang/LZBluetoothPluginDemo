@@ -1,8 +1,7 @@
 // app.js
-import { init } from "./DeviceManager";
 App({
   onLaunch() {
-    init();
+    
   },
 
 

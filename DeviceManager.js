@@ -1,40 +1,6 @@
-const plugin = require("sg-ble");
-const scale = require("sg-scale");
-const bloodpressure = require("sg-bloodpressure");
-const skip = require("sg-skip");
-const box = require('sg-box');
-const bracelet = require('sg-bracelet');
-const dumbbell = require('sg-dumbbell');
-const cavo = require('sg-cavosmart');
-const glucose = require('sg-glucose');
 
-plugin.regist(scale);
-plugin.regist(bloodpressure);
-plugin.regist(skip);
-plugin.regist(box);
-plugin.regist(bracelet);
-plugin.regist(dumbbell);
-plugin.regist(cavo);
-plugin.regist(glucose);
-
-/** 获取setting对象 */
-export const settingFactory = {
-    ...scale.settingFactory,
-    ...bloodpressure.settingFactory,
-    ...skip.settingFactory,
-    ...box.settingFactory,
-    ...bracelet.settingFactory,
-    ...cavo.settingFactory,
-    ...glucose.settingFactory,
-}
-
-console.debug("体脂秤协议", scale.proto);
-console.debug("一些类", cavo.settingFactory);
-
-console.info("=========================================")
-
-// import plugin from 'plugin'
-// const plugin = require('./plugin');
+export const settingFactory = {}
+export const plugin = {}
 
 export const AdaptorStateEventName = 'adaptorState'; // 蓝牙开关的回调
 export const ConnectionStateEventName = 'connectionState'; // 监听设备的时候设备的回调   弃用
@@ -61,58 +27,42 @@ export const CONNECTSTATE_WorkerBusy = 8;
 export const CONNECTSTATE_NotFound = 9;
 export const CONNECTSTATE_AuthorizeFailure = 10;
 
-function privateOnBluetoothDeviceFound(obj) {
-    console.warn("privateOnBluetoothDeviceFound");
-    wx.onBluetoothDeviceFound(res => {
-        console.warn("privateOnBluetoothDeviceFound", res);
-        obj(res);
-    });
-}
-
-function privateOnBLECharacteristicValueChange(obj) {
-    console.warn("privateOnBLECharacteristicValueChange");
-    wx.onBLECharacteristicValueChange(res => {
-        console.warn("privateOnBLECharacteristicValueChange", res);
-        obj(res);
-    })
-}
-
-function privateOnBLEConnectionStateChange(obj) {
-    console.warn("privateOnBLEConnectionStateChange");
-    wx.onBLEConnectionStateChange(res => {
-        console.warn("privateOnBLEConnectionStateChange", res);
-        obj(res);
-    })
-}
-
-function privateOnBluetoothAdapterStateChange(obj) {
-    console.warn("privateOnBluetoothAdapterStateChange");
-    wx.onBluetoothAdapterStateChange(res => {
-        console.warn("privateOnBluetoothAdapterStateChange", res);
-        obj(res);
-    })
-}
-
-function privateStartBluetoothDevicesDiscovery(obj) {
-    let unikey = obj.unikey;
-    console.warn("privateStartBluetoothDevicesDiscovery", unikey);
-    wx.startBluetoothDevicesDiscovery(obj);
-}
-
-function privateStopBluetoothDevicesDiscovery(obj) {
-    let unikey = obj.unikey;
-    console.warn("privateStopBluetoothDevicesDiscovery", unikey);
-    wx.stopBluetoothDevicesDiscovery(obj);
-}
-
 /**
  * 初始化
  */
 export function init() {
-    let version = plugin.getVersion();
-    console.log('version', version);
+    const _plugin = require("sg-ble");
+    Object.assign(plugin, _plugin);
 
-    plugin.init({
+    const scale = require("sg-scale");
+    const bloodpressure = require("sg-bloodpressure");
+    const skip = require("sg-skip");
+    const box = require('sg-box');
+    const bracelet = require('sg-bracelet');
+    const dumbbell = require('sg-dumbbell');
+    const cavo = require('sg-cavosmart');
+    const glucose = require('sg-glucose');
+
+    plugin.regist(scale);
+    plugin.regist(bloodpressure);
+    plugin.regist(skip);
+    plugin.regist(box);
+    plugin.regist(bracelet);
+    plugin.regist(dumbbell);
+    plugin.regist(cavo);
+    plugin.regist(glucose);
+
+    Object.assign(settingFactory, {
+        ...scale.settingFactory,
+        ...bloodpressure.settingFactory,
+        ...skip.settingFactory,
+        ...box.settingFactory,
+        ...bracelet.settingFactory,
+        ...cavo.settingFactory,
+        ...glucose.settingFactory,
+    });
+
+    const promis = plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
         debug: true
     }).then(res => {
@@ -154,6 +104,8 @@ export function init() {
         eventKey: 'shi', /// 唯一标识，同一标识的监听会被覆盖
         callback: onDataReport,
     });
+
+    return promis;
 }
 
 /**

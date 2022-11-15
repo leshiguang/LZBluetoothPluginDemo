@@ -9,7 +9,8 @@
     "pages/ota/ota",
     "pages/product/product",
     "pages/deviceInfo/deviceInfo",
-    "pages/dial/dial"
+    "pages/dial/dial",
+    "pages/mcu/mcu"
   ],
   "permission": {
     "scope.userLocation": {
