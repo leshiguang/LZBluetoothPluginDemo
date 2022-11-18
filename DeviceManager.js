@@ -1,12 +1,12 @@
-const plugin = require("sg-ble");
-const scale = require("sg-scale");
-const bloodpressure = require("sg-bloodpressure");
-const skip = require("sg-skip");
-const box = require('sg-box');
-const bracelet = require('sg-bracelet');
-const dumbbell = require('sg-dumbbell');
-const cavo = require('sg-cavosmart');
-const glucose = require('sg-glucose');
+import plugin from "sg-ble";
+import scale from "sg-scale";
+import bloodpressure from "sg-bloodpressure";
+import skip from "sg-skip";
+import box from 'sg-box';
+import bracelet from 'sg-bracelet';
+import dumbbell from 'sg-dumbbell';
+import cavo from 'sg-cavosmart';
+import glucose from 'sg-glucose';
 
 plugin.regist(scale);
 plugin.regist(bloodpressure);
