@@ -64,7 +64,7 @@ export const CONNECTSTATE_AuthorizeFailure = 10;
 // 重写微信的方法，方便适配uniapp
 const getSystemInfoSync = () => {
     return {
-      locationEnabled: false,
+      locationEnabled: true,
       locationAuthorized: true,
       platform: "android"
     }
