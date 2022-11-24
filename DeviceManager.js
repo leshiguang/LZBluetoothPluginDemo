@@ -61,49 +61,14 @@ export const CONNECTSTATE_WorkerBusy = 8;
 export const CONNECTSTATE_NotFound = 9;
 export const CONNECTSTATE_AuthorizeFailure = 10;
 
-function privateOnBluetoothDeviceFound(obj) {
-    console.warn("privateOnBluetoothDeviceFound");
-    wx.onBluetoothDeviceFound(res => {
-        console.warn("privateOnBluetoothDeviceFound", res);
-        obj(res);
-    });
-}
-
-function privateOnBLECharacteristicValueChange(obj) {
-    console.warn("privateOnBLECharacteristicValueChange");
-    wx.onBLECharacteristicValueChange(res => {
-        console.warn("privateOnBLECharacteristicValueChange", res);
-        obj(res);
-    })
-}
-
-function privateOnBLEConnectionStateChange(obj) {
-    console.warn("privateOnBLEConnectionStateChange");
-    wx.onBLEConnectionStateChange(res => {
-        console.warn("privateOnBLEConnectionStateChange", res);
-        obj(res);
-    })
-}
-
-function privateOnBluetoothAdapterStateChange(obj) {
-    console.warn("privateOnBluetoothAdapterStateChange");
-    wx.onBluetoothAdapterStateChange(res => {
-        console.warn("privateOnBluetoothAdapterStateChange", res);
-        obj(res);
-    })
-}
-
-function privateStartBluetoothDevicesDiscovery(obj) {
-    let unikey = obj.unikey;
-    console.warn("privateStartBluetoothDevicesDiscovery", unikey);
-    wx.startBluetoothDevicesDiscovery(obj);
-}
-
-function privateStopBluetoothDevicesDiscovery(obj) {
-    let unikey = obj.unikey;
-    console.warn("privateStopBluetoothDevicesDiscovery", unikey);
-    wx.stopBluetoothDevicesDiscovery(obj);
-}
+// 重写微信的方法，方便适配uniapp
+const getSystemInfoSync = () => {
+    return {
+      locationEnabled: false,
+      locationAuthorized: true,
+      platform: "android"
+    }
+  }
 
 /**
  * 初始化
@@ -114,7 +79,10 @@ export function init() {
 
     plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
-        debug: true
+        debug: true,
+        ble: {
+            getSystemInfoSync
+        }
     }).then(res => {
         console.debug("初始化成功 ", res);
     }).catch(err => {
