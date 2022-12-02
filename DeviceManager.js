@@ -40,6 +40,7 @@ export const AdaptorStateEventName = 'adaptorState'; // 蓝牙开关的回调
 export const ConnectionStateEventName = 'connectionState'; // 监听设备的时候设备的回调   弃用
 export const DataReportEventName = 'dataReport'; // 设备数据的回调
 export const DeviceStateChangedName = 'deviceStateChange'; // 设备的工作状态发生变化的回调
+export const DeviceSyncDataStateChange = 'syncDataStateChange'; // 数据同步状态
 
 export const BINDSTATE_InputRandomNumber = 0; // 输入随机数 (A5)
 export const BINDSTATE_Successful = 4; // 绑定成功
@@ -104,6 +105,7 @@ export function init() {
      * AdaptorState = 'adaptorState',//蓝牙状态改变回调
      * ConnectionState = 'connectionState',//连接状态改变回调
      * DataReport = 'dataReport', // 数据接收回调
+     * DeviceSyncDataStateChange = 'deviceStateChange', // 数据同步状态发生变化
      */
     plugin.$on({
         eventName: AdaptorStateEventName,
@@ -119,9 +121,19 @@ export function init() {
 
     plugin.$on({
         eventName: DataReportEventName,
-        eventKey: 'shi', /// 唯一标识，同一标识的监听会被覆盖
+        eventKey: 'ni', /// 唯一标识，同一标识的监听会被覆盖
         callback: onDataReport,
     });
+
+    // 只是对HR6，HR5Plus有效
+    plugin.$on({
+        eventName: DeviceSyncDataStateChange,
+        eventKey: 'dad', /// 唯一标识，同一标识的监听会被覆盖
+        callback: (device) => {
+            const isLoading = device.isLoadingData;
+            console.warn('是否正在加载数据', isLoading);
+        }
+    })
 }
 
 /**
