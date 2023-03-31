@@ -1,20 +1,30 @@
 {
-  "name": "lsplugin",
-  "version": "1.0.0",
-  "description": "demo",
-  "main": "DeviceManager.js",
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/leshiguang/LZBluetoothPluginDemo.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/leshiguang/LZBluetoothPluginDemo/issues"
-  },
-  "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme"
+    "name": "lsplugin",
+    "version": "1.0.0",
+    "description": "demo",
+    "main": "DeviceManager.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/leshiguang/LZBluetoothPluginDemo.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/leshiguang/LZBluetoothPluginDemo/issues"
+    },
+    "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
+    "dependencies": {
+        "sg-ble": "^2.2.11",
+        "sg-bloodpressure": "^2.2.11",
+        "sg-box": "^2.2.11",
+        "sg-bracelet": "^2.2.11",
+        "sg-cavosmart": "^2.2.11",
+        "sg-dumbbell": "^2.2.11",
+        "sg-glucose": "^2.2.11",
+        "sg-scale": "^2.2.11",
+        "sg-skip": "^2.2.11"
+    }
 }

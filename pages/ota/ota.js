@@ -22,33 +22,10 @@ Page({
 
     list: [
       {
-        name: "456B1H1003_1003T016_016A0.0.0_3.4.51D232_232_163A1B74.lzo.lsf",
-        path: "https://media.githubusercontent.com/media/malai520/OtaFile/main/456/456B1H1003_1003T016_016A0.0.0_3.4.51D232_232_163A1B74.lzo.lsf",
+        name: "cavo ota",
+        path: "https://file-report.leshiguang.com/reportfs/2023/03/31/cc54e1a96535415d876bf8921e0973f0.bin",
       },
-      {
-        name: "431B3H1004_1010T311_000A3.1.0_0.0.0D150_000_994E57A4.lsf",
-        path: "http://sports-qa-files.lifesense.com/firmware/20191114/431B3H1004_1010T311_000A3.1.0_0.0.0D150_000_994E57A4.lsf",
-      },
-      {
-        name: "431B3H1004_1010T311_000A3.1.0_0.0.0D150_000_994E57A4.lsf",
-        path: "http://sports-qa-files.lifesense.com/firmware/20191114/431B3H1004_1010T311_000A3.1.0_0.0.0D150_000_994E57A4.lsf",
-      },
-      {
-        name: "431D7H1004_1010T218_000A3.1.0_0.0.0D150_000_41BD765B.lsf",
-        path: "https://files.lifesense.com/firmware/20211011/431D7H1004_1010T218_000A3.1.0_0.0.0D150_000_41BD765B.lsf",
-      },
-      {
-        name: "431D7H1004_1010T217_000A3.1.0_0.0.0D150_000_781F657B.lsf",
-        path: "https://files.lifesense.com/firmware/20201020/431D7H1004_1010T217_000A3.1.0_0.0.0D150_000_781F657B.lsf"
-      },
-      {
-        name: "431D7H1004_1010T218_000A3.1.0_0.0.0D150_000_41BD765B.lsf",
-        path: "https://files.lifesense.com/firmware/20211013/431D7H1004_1010T218_000A3.1.0_0.0.0D150_000_41BD765B.lsf"
-      },
-      {
-        name: "431B3H1004_1004T313_311A3.1.0_3.4.48D150_150_6890AA21.lzo.lsf",
-        path: "https://files.lifesense.com/firmware/20210715/431B3H1004_1004T313_311A3.1.0_3.4.48D150_150_6890AA21.lzo.lsf",
-      }
+
 
     ]
   },

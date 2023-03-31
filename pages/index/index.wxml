@@ -1,16 +1,13 @@
 <view class='page'>
 
-<view>
-		<!-- <view class="btn" bindtap="goMylist">我的设备列表</view>
-		<view class="btn" bindtap="goProduct">产品列表</view> -->
+<!-- <view>
 		<view class="webview-box">
 			<view class="title">业务数据查看</view>
 			<view class="box">
 				<view class="btn small" wx:for="{{webviewList}}" wx:for-item="item" wx:key="type" data-text="{{index}}" bindtap="jumpToDetail">{{item.title}}</view>
 			</view>
 		</view>
-		<!-- <ls-devtools @refresh="refresh" /> -->
-	</view>
+	</view> -->
 
 
   <view wx:if='{{isBluetoothEnable}}' class='flex-wrp-row item'>
@@ -48,16 +45,4 @@
     </view>
   </scroll-view>
 
-  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/product/index">
-    <view class="btn">插件产品列表</view>
-  </navigator>
-  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/mylist/index">
-    <view class="btn">插件我的列表</view>
-  </navigator>
-  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/bind/inputsn/index">
-    <view class="btn">插件扫码绑定</view>
-  </navigator>
-  <navigator url="plugin-private://wxe3d2a6ab8dd5b49b/pages/device/bind/snbind/index">
-    <view class="btn">插件sn绑定</view>
-  </navigator>
 </view>

@@ -2,7 +2,7 @@
 import { init } from "./DeviceManager";
 App({
   onLaunch() {
-
+    init();
   },
 
 
@@ -17,6 +17,6 @@ App({
         console.error("授权失败", error);
       }
     })
-    init();
+    
   }
 })
