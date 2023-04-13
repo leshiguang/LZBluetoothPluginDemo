@@ -9,6 +9,10 @@ import {
     connectStateMsg
 } from '../../DeviceManager'
 
+import {
+     startScan, stopScan
+} from '../../YourBLEManager'
+
 Page({
     data: {
         isBluetoothEnable: false,
@@ -91,12 +95,8 @@ Page({
         let scanResults = [];
         let macs = [];
         /** 开始搜索设备 */
-        startScanning(res => {
-            // let localName = res.localName;
-            // if (localName.indexOf('GBF') < 0) {
-            //   return;
-            // }
-
+        startScan(res => {
+            console.warn('startScan', res);
             let index = macs.indexOf(res.mac);
             if (index < 0) {
                 scanResults.push(res);
@@ -116,18 +116,45 @@ Page({
                 scanResults,
                 macs
             })
-        });
+
+        })
+        // startScanning(res => {
+        //     // let localName = res.localName;
+        //     // if (localName.indexOf('GBF') < 0) {
+        //     //   return;
+        //     // }
+
+        //     let index = macs.indexOf(res.mac);
+        //     if (index < 0) {
+        //         scanResults.push(res);
+        //         macs.push(res.mac);
+        //     } else {
+        //         let obj = scanResults[index];
+        //         if (obj.RSSI < res.RSSI || !obj.RSSI) {
+        //             obj.RSSI = res.RSSI;
+        //         }
+        //     }
+
+        //     // 排序 大->小
+        //     scanResults.sort(function(a, b) { return b.RSSI - a.RSSI });
+
+        //     /** 更新UI */
+        //     this.setData({
+        //         scanResults,
+        //         macs
+        //     })
+        // });
     },
 
     stopSearch() {
         this.setData({
             isScanning: false
         });
-        stopScanning();
+        stopScan();
     },
 
     selectDevice: function(event) {
-        stopScanning();
+        stopScan();
         let target = event.target;
         let index = parseInt(event.currentTarget.dataset.text);
         let device = this.data.scanResults[index];

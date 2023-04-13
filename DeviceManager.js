@@ -8,6 +8,8 @@ import dumbbell from 'sg-dumbbell';
 import cavo from 'sg-cavosmart';
 import glucose from 'sg-glucose';
 
+import { init as YouInit, ble } from "./YourBLEManager";
+
 plugin.regist(scale);
 plugin.regist(bloodpressure);
 plugin.regist(skip);
@@ -62,30 +64,25 @@ export const CONNECTSTATE_WorkerBusy = 8;
 export const CONNECTSTATE_NotFound = 9;
 export const CONNECTSTATE_AuthorizeFailure = 10;
 
-// 重写微信的方法，方便适配uniapp
-const getSystemInfoSync = () => {
-    return {
-      locationEnabled: true,
-      locationAuthorized: true,
-      platform: "android"
-    }
-  }
+
 
 /**
  * 初始化
  */
 export function init() {
+    YouInit();
     let version = plugin.getVersion();
     console.log('version', version);
 
     plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
         debug: true,
-        ble: {
-            getSystemInfoSync
+        ble,
+        bracelet: {
+            loopTime: 1000,
         },
         cavosmart: {
-          loopTime: 3000,
+          loopTime: 1000,
         }
     }).then(res => {
         console.debug("初始化成功 ", res);

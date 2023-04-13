@@ -10,7 +10,8 @@ import {
   addMonitorDevice,
   deleteMonitorDevice,
   bindStateMsg,
-  connectStateMsg
+  connectStateMsg,
+  setMonitorDevice
 
 } from '../../DeviceManager'
 
@@ -69,7 +70,7 @@ Page({
     })
 
     // 添加监听
-    addMonitorDevice({ 
+    setMonitorDevice({ 
       mac: this.data.mac,
       model: this.data.model,
     })
