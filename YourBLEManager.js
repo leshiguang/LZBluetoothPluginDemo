@@ -8,6 +8,8 @@ import { ab2hex } from "./Utils";
 // 类型参考上面
 let callbackList = {}
 
+
+
 // 添加监听
 function addListener(functionName, key, callback) {
     let obj = callbackList[functionName];
@@ -58,11 +60,34 @@ function onBluetoothAdapterStateChange(res) {
     addListener('onBluetoothAdapterStateChange', 'sg', res);
 }
 
+// 搜索缓存
+let cache = {};
+function getBluetoothDevices(res) {
+    let set = new Set();
+    Object.keys(cache).forEach(key => {
+        set.add(cache[key]);
+    })
+    return wx.getBluetoothDevices({
+        fail: (failRes) => {
+            res.success || res.success({ devices: set.values() });
+        },
+        success: (successRes) => {
+            successRes?.devices.forEach(device => {
+                set.add(device);
+            });
+            res.success || res.success({ devices: set.values() });
+        }
+    });
+}
+
 
 
 // 初始化的时候监听这四个状态 
 export function init() {
     wx.onBluetoothDeviceFound(res => {
+        res.devices?.forEach(device => {
+            cache[device.deviceId] = device;
+        });
         emit('onBluetoothDeviceFound', res);
     });
     wx.onBLEConnectionStateChange(res => {
@@ -82,7 +107,7 @@ export function startScan(callback) {
     addListener('onBluetoothDeviceFound', 'startScan', res => {
         // 做一些你自己的解析 
         res.devices?.forEach(device => {
-            if (device.localName && device.localName.indexOf('GBF') > -1) {
+            if (device.localName && device.localName.indexOf('Glucose') > -1) {
                 console.warn('test', device);
                 const advertiseData = device.advertisData;
                 if (advertiseData && advertiseData.byteLength >= 6) {
@@ -93,7 +118,7 @@ export function startScan(callback) {
                     callback({
                         ...device,
                         mac,
-                        model: 'GBF-xxx'
+                        model: 'Glucose-xxx'
                     })
                 }
             }
@@ -115,5 +140,6 @@ export const ble = {
     onBLECharacteristicValueChange,
     onBluetoothDeviceFound,
     onBluetoothAdapterStateChange,
-    getSystemInfoSync
+    getSystemInfoSync,
+    getBluetoothDevices
 }
