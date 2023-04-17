@@ -69,13 +69,13 @@ function getBluetoothDevices(res) {
     })
     return wx.getBluetoothDevices({
         fail: (failRes) => {
-            res.success || res.success({ devices: set.values() });
+            res.success && res.success({ devices: set.values() });
         },
         success: (successRes) => {
             successRes?.devices.forEach(device => {
                 set.add(device);
             });
-            res.success || res.success({ devices: set.values() });
+            res.success && res.success({ devices: set.values() });
         }
     });
 }
