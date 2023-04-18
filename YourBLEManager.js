@@ -107,7 +107,7 @@ export function startScan(callback) {
     addListener('onBluetoothDeviceFound', 'startScan', res => {
         // 做一些你自己的解析 
         res.devices?.forEach(device => {
-            if (device.localName && device.localName.indexOf('Glucose') > -1) {
+            if (device.localName && (device.localName.indexOf('Glucose') > -1 || device.localName.indexOf('GBF') > -1)) {
                 console.warn('test', device);
                 const advertiseData = device.advertisData;
                 if (advertiseData && advertiseData.byteLength >= 6) {
@@ -124,6 +124,31 @@ export function startScan(callback) {
             }
         })
     });
+
+    // 增加从缓存中读取
+    getBluetoothDevices({
+        success: (res) => {
+            // 做一些你自己的解析 
+            res.devices?.forEach(device => {
+                if (device.localName && (device.localName.indexOf('Glucose') > -1 || device.localName.indexOf('GBF') > -1)) {
+                    console.warn('test', device);
+                    const advertiseData = device.advertisData;
+                    if (advertiseData && advertiseData.byteLength >= 6) {
+                        const length = advertiseData.byteLength;
+                        const macBytes = advertiseData.slice(length - 6, length);
+                        let mac = ab2hex(macBytes).toUpperCase();
+                        console.warn('length', length)
+                        callback({
+                            ...device,
+                            mac,
+                            model: 'Glucose-xxx'
+                        })
+                    }
+                }
+            })
+        }
+    })
+
     return wx.startBluetoothDevicesDiscovery();
 }
 
