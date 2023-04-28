@@ -62,14 +62,6 @@ export const CONNECTSTATE_WorkerBusy = 8;
 export const CONNECTSTATE_NotFound = 9;
 export const CONNECTSTATE_AuthorizeFailure = 10;
 
-// 重写微信的方法，方便适配uniapp
-const getSystemInfoSync = () => {
-    return {
-      locationEnabled: true,
-      locationAuthorized: true,
-      platform: "android"
-    }
-  }
 
 /**
  * 初始化
@@ -81,12 +73,6 @@ export function init() {
     plugin.init({
         appId: 'com.leshiguang.saas.rbac.demo.appid',
         debug: true,
-        ble: {
-            getSystemInfoSync
-        },
-        cavosmart: {
-          loopTime: 3000,
-        }
     }).then(res => {
         console.debug("初始化成功 ", res);
     }).catch(err => {
