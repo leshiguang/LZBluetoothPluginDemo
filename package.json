@@ -17,13 +17,14 @@
     },
     "homepage": "https://github.com/leshiguang/LZBluetoothPluginDemo#readme",
     "dependencies": {
-        "sg-bloodpressure": "^2.2.15",
-        "sg-box": "^2.2.15",
-        "sg-bracelet": "^2.2.15",
-        "sg-cavosmart": "^2.2.15",
-        "sg-dumbbell": "^2.2.15",
-        "sg-glucose": "^2.2.15",
-        "sg-scale": "^2.2.15",
-        "sg-skip": "^2.2.15"
+        "sg-ble": "2.3.3",
+        "sg-bloodpressure": "2.3.3",
+        "sg-box": "2.3.3",
+        "sg-bracelet": "2.3.3",
+        "sg-cavosmart": "2.3.3",
+        "sg-dumbbell": "2.3.3",
+        "sg-glucose": "2.3.3",
+        "sg-scale": "2.3.3",
+        "sg-skip": "2.3.3"
     }
 }
