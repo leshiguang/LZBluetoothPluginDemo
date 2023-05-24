@@ -23,7 +23,7 @@ Page({
     list: [
       {
         name: "cavo ota",
-        path: "https://img01cdn.sghealth.cn/sghealth-home/2023/05/06/6d1aa7fc44404a79a0eaf9cc526e6daa.bin",
+        path: "https://file-report.leshiguang.com/reportfs/2023/05/24/e58ddcbebe774b1da7677fc2a408d12e.bin",
       },
 
 
