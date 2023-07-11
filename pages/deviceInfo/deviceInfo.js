@@ -96,6 +96,7 @@ const SettingType = {
   // 调节亮度
   CVBrightness: 4012,
   CVRaise: 4013,
+  CVSlience: 4014,
 
   // 跳神
   BeginJump: 0x10001, // 开始跳绳
@@ -760,6 +761,20 @@ Page({
       settingInfo = new settingFactory.Raise(false);
       break;
     }
+    case SettingType.CVSlience: {
+      const startHour = 23;
+      const startMinute = 0;
+      const endHour = 6;
+      const endMinute = 6;
+      settingInfo = new settingFactory.Slience(
+        true,
+        startHour,
+        startMinute,
+        endHour,
+        endMinute,
+      );
+      break;
+    }
     default:
       break;
     }
@@ -869,6 +884,9 @@ Page({
     case SettingType.CVRaise:
       settingType = 25;
       break;
+    case SettingType.CVSlience:
+      settingType = 8;
+      break;
     default:
       break;
     }
@@ -916,6 +934,7 @@ Page({
       { name: this.name(SettingType.CVSyncHistoryDataReq), settingType: SettingType.CVSyncHistoryDataReq, value: "" },
       { name: this.name(SettingType.CVBrightness), settingType: SettingType.CVBrightness, value: '' },
       { name: this.name(SettingType.CVRaise), settingType: SettingType.CVRaise, value: '' },
+      { name: this.name(SettingType.CVSlience), settingType: SettingType.CVSlience, value: '' },
     ];
   },
   a5DeviceSettings() {
@@ -1153,6 +1172,8 @@ Page({
       return "cv屏幕亮度";
     case SettingType.CVRaise:
       return "cv抬腕亮屏";
+    case SettingType.CVSlience:
+      return 'cv勿扰模式';
     default:
     }
     return '';
