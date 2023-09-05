@@ -7,6 +7,7 @@ import bracelet from 'sg-bracelet';
 import dumbbell from 'sg-dumbbell';
 import cavo from 'sg-cavosmart';
 import glucose from 'sg-glucose';
+import ts from 'sg-ts1';
 
 plugin.regist(scale);
 plugin.regist(bloodpressure);
@@ -16,6 +17,7 @@ plugin.regist(bracelet);
 plugin.regist(dumbbell);
 plugin.regist(cavo);
 plugin.regist(glucose);
+plugin.regist(ts);
 
 /** 获取setting对象 */
 export const settingFactory = {
